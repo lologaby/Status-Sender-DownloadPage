@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worldnet Status Sender - Descargar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827; /* bg-gray-900 */
+            color: #d1d5db; /* text-gray-300 */
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glow-effect {
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4), 0 0 30px rgba(59, 130, 246, 0.2);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header class="py-4 px-6 md:px-12">
+        <nav class="flex items-center justify-between">
+            <a href="#" class="flex items-center space-x-3">
+                <!-- Logo SVG -->
+                <svg class="h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9 9 0 0 1-9-9 9 9 0 0 1 9-9 9 9 0 0 1 9 9c0 2.393-.94 4.586-2.475 6.211m-1.297-4.144A4.5 4.5 0 0 0 12 12.75a4.5 4.5 0 0 0-4.228 3.317M12 21v-3.375m0 0a4.5 4.5 0 0 0 4.228-3.317M12 17.625a4.5 4.5 0 0 1-4.228-3.317M15.75 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12c0 4.238 2.68 7.843 6.375 9.162" />
+                </svg>
+                <span class="font-bold text-xl text-white">Worldnet Status Sender</span>
+            </a>
+            <a href="#download" class="hidden md:inline-block bg-blue-600 text-white font-semibold px-5 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                Descargar
+            </a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="text-center py-20 md:py-32 px-6">
+            <div class="max-w-3xl mx-auto">
+                <h1 class="text-4xl md:text-6xl font-black text-white leading-tight">
+                    La Herramienta Definitiva para Notificar el Estado de tu Red
+                </h1>
+                <p class="mt-6 text-lg md:text-xl text-gray-400 max-w-2xl mx-auto">
+                    Mantén a tus sistemas informados de manera automática y eficiente. Con Worldnet Status Sender, la comunicación de estado de red nunca ha sido tan sencilla.
+                </p>
+                <div id="download" class="mt-10">
+                    <!-- El backend se encargará de que este enlace inicie la descarga -->
+                    <a href="/api/download" 
+                       class="bg-blue-600 text-white font-bold text-lg px-10 py-4 rounded-xl inline-block transition-transform transform hover:scale-105 glow-effect">
+                        Descargar Última Versión
+                    </a>
+                    <p class="text-sm text-gray-500 mt-3">Para Windows y macOS</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Screenshots Section -->
+        <section id="screenshots" class="py-20 bg-gray-900/50">
+            <div class="max-w-6xl mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white">Interfaz Intuitiva y Poderosa</h2>
+                    <p class="mt-4 text-gray-400">Un vistazo a cómo funciona la aplicación.</p>
+                </div>
+                <!-- Grid para las capturas -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                    <!-- Reemplaza estas URLs con las de tus capturas de pantalla -->
+                    <img src="https://placehold.co/600x400/1f2937/d1d5db?text=Pantalla+Principal" alt="Captura de la pantalla principal" class="rounded-xl shadow-lg w-full h-auto object-cover glass-effect">
+                    <img src="https://placehold.co/600x400/1f2937/d1d5db?text=Configuración" alt="Captura de la pantalla de configuración" class="rounded-xl shadow-lg w-full h-auto object-cover glass-effect">
+                    <img src="https://placehold.co/600x400/1f2937/d1d5db?text=Reportes" alt="Captura de la pantalla de reportes" class="rounded-xl shadow-lg w-full h-auto object-cover glass-effect">
+                </div>
+            </div>
+        </section>
+        
+        <!-- Features Section -->
+        <section id="features" class="py-20">
+            <div class="max-w-6xl mx-auto px-6">
+                <div class="text-center mb-12">
+                     <h2 class="text-3xl md:text-4xl font-bold text-white">Características Principales</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div class="p-8 rounded-xl glass-effect">
+                        <h3 class="text-xl font-bold text-white mb-2">Notificaciones Automáticas</h3>
+                        <p class="text-gray-400">Configura y olvídate. La app envía el estado de la red sin intervención manual.</p>
+                    </div>
+                    <div class="p-8 rounded-xl glass-effect">
+                        <h3 class="text-xl font-bold text-white mb-2">Integración Sencilla</h3>
+                        <p class="text-gray-400">Compatible con los sistemas más comunes a través de una API simple.</p>
+                    </div>
+                    <div class="p-8 rounded-xl glass-effect">
+                        <h3 class="text-xl font-bold text-white mb-2">Seguridad Primero</h3>
+                        <p class="text-gray-400">Toda la comunicación se realiza de forma encriptada y segura.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-8 mt-12 border-t border-gray-800">
+        <p class="text-gray-500">&copy; 2024 Worldnet. Todos los derechos reservados.</p>
+    </footer>
+
+</body>
+</html>
