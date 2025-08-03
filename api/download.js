@@ -2,22 +2,32 @@
 
 export default async function handler(req, res) {
     // --- CONFIGURACIÓN ---
-    // Lee las variables de entorno que configurarás en Vercel.
     const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
     const USER = process.env.GITHUB_USER;
     const REPO = process.env.GITHUB_REPO;
-    // Opcional: El nombre del archivo a descargar (si tienes varios).
-    // Déjalo como null para descargar el primer archivo del release.
     const ASSET_NAME = null; 
-    // -------------------
+
+    // --- PASO DE DEPURACIÓN ---
+    // Vamos a registrar en los logs de Vercel qué está recibiendo la función.
+    console.log("--- INICIANDO FUNCIÓN DE DESCARGA (MODO DEPURACIÓN) ---");
+    console.log(`Usuario de GitHub (USER): ${USER}`);
+    console.log(`Repositorio de GitHub (REPO): ${REPO}`);
+    console.log(`¿Se recibió un token (GITHUB_TOKEN)? ${!!GITHUB_TOKEN}`); // Debería ser true
+    if (GITHUB_TOKEN) {
+        console.log(`Longitud del token recibido: ${GITHUB_TOKEN.length}`); // Para confirmar que no está vacío
+    } else {
+        console.error("¡ALERTA! El GITHUB_TOKEN es undefined o null.");
+    }
+    // --------------------------------------------------------------------
 
     if (!GITHUB_TOKEN || !USER || !REPO) {
-        return res.status(500).json({ error: 'Variables de entorno no configuradas en el servidor.' });
+        return res.status(500).json({ error: 'Una o más variables de entorno no fueron recibidas por la función.' });
     }
 
     try {
-        // 1. Obtener la información del último "release" desde la API de GitHub.
         const releaseUrl = `https://api.github.com/repos/${USER}/${REPO}/releases/latest`;
+        console.log(`Intentando acceder a la URL de la API: ${releaseUrl}`);
+
         const releaseResponse = await fetch(releaseUrl, {
             headers: {
                 'Authorization': `token ${GITHUB_TOKEN}`,
@@ -25,8 +35,11 @@ export default async function handler(req, res) {
             },
         });
 
+        // Si la respuesta no es OK, también lo registramos
         if (!releaseResponse.ok) {
-            console.error('Error al obtener el release:', releaseResponse.statusText);
+            console.error(`Respuesta de GitHub: ${releaseResponse.status} - ${releaseResponse.statusText}`);
+            const errorBody = await releaseResponse.json();
+            console.error('Cuerpo del error de GitHub:', errorBody);
             return res.status(releaseResponse.status).json({ error: `Error al contactar GitHub: ${releaseResponse.statusText}` });
         }
 
@@ -36,8 +49,7 @@ export default async function handler(req, res) {
             return res.status(404).json({ error: 'El último release no contiene archivos para descargar.' });
         }
 
-        // 2. Encontrar el archivo (asset) correcto para descargar.
-        let asset = releaseData.assets[0]; // Por defecto, el primer archivo.
+        let asset = releaseData.assets[0];
         if (ASSET_NAME) {
             asset = releaseData.assets.find(a => a.name === ASSET_NAME);
         }
@@ -46,19 +58,15 @@ export default async function handler(req, res) {
             return res.status(404).json({ error: `No se encontró el archivo con el nombre ${ASSET_NAME} en el release.` });
         }
 
-        // 3. Obtener la URL de descarga real.
-        // GitHub requiere una petición específica para obtener una URL temporal y firmada.
         const assetUrl = asset.url;
         const assetResponse = await fetch(assetUrl, {
             headers: {
                 'Authorization': `token ${GITHUB_TOKEN}`,
-                'Accept': 'application/octet-stream', // ¡Esto es crucial!
+                'Accept': 'application/octet-stream',
             },
-            redirect: 'manual' // Evitamos que fetch siga la redirección automáticamente.
+            redirect: 'manual' 
         });
 
-        // GitHub responde con un 302 Redirect a una URL temporal de S3.
-        // Extraemos esa URL del header 'location'.
         const downloadUrl = assetResponse.headers.get('location');
 
         if (!downloadUrl) {
@@ -66,11 +74,10 @@ export default async function handler(req, res) {
              return res.status(500).json({ error: 'Respuesta inesperada de la API de GitHub.' });
         }
 
-        // 4. Redirigir al cliente a la URL de descarga final.
         res.redirect(302, downloadUrl);
 
     } catch (error) {
-        console.error('Error en la función del servidor:', error);
+        console.error('Error catastrófico en la función del servidor:', error);
         res.status(500).json({ error: 'Ha ocurrido un error interno en el servidor.' });
     }
 }
