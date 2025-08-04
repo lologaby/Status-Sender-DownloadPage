@@ -7,64 +7,92 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         /* Definimos tu paleta de colores como variables CSS */
         :root {
             --mirage: #19202e;
             --mystic: #dae5ea;
             --boston-blue: #319bba;
+            --azure: #2a63ab;
             --shakespeare: #50accc;
-            --shuttle-gray: #5c606a;
+            --congress-blue: #06419c;
         }
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--mirage);
             color: var(--mystic);
+            /* Fondo animado sutil para un toque profesional */
+            background: linear-gradient(-45deg, var(--mirage), var(--congress-blue), var(--mirage), var(--boston-blue));
+            background-size: 400% 400%;
+            animation: gradientBG 25s ease infinite;
+            overflow: hidden; /* Evita barras de scroll por la animación */
         }
-        /* Extendemos Tailwind para usar tus colores personalizados */
-        .bg-mirage { background-color: var(--mirage); }
-        .bg-boston-blue { background-color: var(--boston-blue); }
-        .hover\:bg-shakespeare:hover { background-color: var(--shakespeare); }
-        .text-mystic { color: var(--mystic); }
-        .shadow-boston-blue { box-shadow: 0 10px 15px -3px rgba(49, 155, 186, 0.4), 0 4px 6px -4px rgba(49, 155, 186, 0.4); }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        /* Efecto de tarjeta de cristal esmerilado */
+        .glass-card {
+            background: rgba(25, 32, 46, 0.6); /* --mirage con transparencia */
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px); /* Para Safari */
+            border: 1px solid rgba(218, 229, 234, 0.1); /* --mystic con transparencia */
+        }
+        /* Sombra personalizada para el botón */
+        .btn-shadow {
+             box-shadow: 0 8px 25px -5px var(--boston-blue), 0 4px 6px -4px var(--boston-blue);
+        }
     </style>
 </head>
-<body class="h-full flex items-center justify-center p-6">
+<body class="h-full flex items-center justify-center p-4">
 
-    <div class="text-center flex flex-col items-center space-y-8">
-        
-        <!-- ICONO DE LA APLICACIÓN -->
-        <div class="w-32 h-32 md:w-40 md:h-40">
-            <img src="piruicon.png" alt="Logo de Worldnet Status Sender" class="w-full h-full object-contain rounded-lg">
+    <!-- Contenedor principal con efecto de tarjeta -->
+    <main class="glass-card w-full max-w-md rounded-2xl p-8 md:p-12 shadow-2xl">
+        <div class="text-center flex flex-col items-center space-y-6">
+            
+            <!-- ICONO DE LA APLICACIÓN -->
+            <div class="w-28 h-28 md:w-32 md:h-32 -mt-20 md:-mt-24">
+                <img src="piruicon.png" alt="Logo de Worldnet Status Sender" class="w-full h-full object-contain rounded-full shadow-lg bg-mirage p-2">
+            </div>
+
+            <!-- TÍTULO Y DESCRIPCIÓN -->
+            <div>
+                <h1 class="text-3xl md:text-4xl font-bold text-mystic">
+                    Worldnet Status Sender
+                </h1>
+                <p class="text-mystic/80 mt-2">
+                    La última versión de la aplicación está lista para descargar.
+                </p>
+            </div>
+
+            <!-- BOTÓN DE DESCARGA -->
+            <a href="/api/download" 
+               class="cursor-pointer bg-boston-blue px-8 py-4 rounded-lg text-mystic font-semibold text-lg tracking-wider btn-shadow animate-bounce hover:animate-none transition-all duration-300 ease-in-out hover:bg-shakespeare hover:shadow-lg hover:scale-105 inline-flex items-center space-x-3">
+                <svg
+                    class="w-6 h-6"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3"
+                        stroke-linejoin="round"
+                        stroke-linecap="round"
+                    ></path>
+                </svg>
+                <span>Descargar para Windows</span>
+            </a>
         </div>
-
-        <!-- TÍTULO -->
-        <h1 class="text-2xl md:text-3xl font-bold text-mystic">
-            Worldnet Status Sender
-        </h1>
-
-        <!-- BOTÓN DE DESCARGA -->
-        <a href="/api/download" 
-           class="cursor-pointer bg-boston-blue px-6 py-3 rounded-lg text-mystic tracking-wider shadow-boston-blue animate-bounce hover:animate-none transition-colors duration-300 ease-in-out hover:bg-shakespeare inline-flex items-center space-x-2">
-            <svg
-                class="w-6 h-6"
-                stroke="currentColor"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-            >
-                <path
-                    d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3"
-                    stroke-linejoin="round"
-                    stroke-linecap="round"
-                ></path>
-            </svg>
-            <span class="font-semibold">Descargar</span>
-        </a>
-
-    </div>
+    </main>
+    
+    <!-- Footer sutil -->
+    <footer class="absolute bottom-4 text-center w-full">
+        <p class="text-mystic/50 text-sm">Desarrollado por <a href="https://alexberrios.com" target="_blank" rel="noopener noreferrer" class="hover:text-mystic/80 transition-colors">alexberrios.com</a></p>
+    </footer>
 
 </body>
 </html>
