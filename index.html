@@ -44,6 +44,24 @@
         .btn-shadow {
              box-shadow: 0 8px 25px -5px var(--boston-blue), 0 4px 6px -4px var(--boston-blue);
         }
+        /* Animación para el gradiente del texto */
+        @keyframes gradient-text-animation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        /* Estilo de texto con gradiente animado para el footer */
+        .gradient-link {
+            background: linear-gradient(90deg, var(--shakespeare), var(--mystic), var(--boston-blue), var(--shakespeare));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+            font-weight: 500;
+            display: inline-block;
+            animation: gradient-text-animation 5s ease-in-out infinite;
+        }
     </style>
 </head>
 <body class="h-full flex items-center justify-center p-4">
@@ -89,10 +107,10 @@
         </div>
     </main>
     
-    <!-- Footer con "Buy Me a Coffee" -->
+    <!-- Footer con "Buy Me a Coffee" y firma mejorada -->
     <footer class="absolute bottom-4 left-0 right-0 px-6">
         <div class="w-full max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-center md:justify-between gap-4">
-            <p class="text-mystic/50 text-sm order-2 md:order-1">Desarrollado por <a href="https://alexberrios.com" target="_blank" rel="noopener noreferrer" class="hover:text-mystic/80 transition-colors">alexberrios.com</a></p>
+            <p class="text-mystic/60 text-sm order-2 md:order-1">Desarrollado por <a href="https://alexberrios.com" target="_blank" rel="noopener noreferrer" class="gradient-link">alexberrios.com</a></p>
             <div class="order-1 md:order-2">
                 <!-- Buy Me A Coffee Button -->
                 <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="berr.io" data-color="#FFDD00" data-emoji=""  data-font="Cookie" data-text="Págame un Cafecito" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff" ></script>
