@@ -28,7 +28,7 @@
             background: linear-gradient(-45deg, var(--mirage), var(--congress-blue), var(--mirage), var(--boston-blue));
             background-size: 400% 400%;
             animation: gradientBG 25s ease infinite;
-            overflow-x: hidden;
+            overflow: hidden; /* Clave para evitar barras de scroll durante la animación */
         }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         .glass-card {
@@ -56,83 +56,111 @@
         }
         .hover\:stroke-boston-blue:hover { stroke: var(--boston-blue); }
         /* Estilos para el contenedor de notas del release */
-        .release-notes {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease-in-out;
+        .release-notes { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; }
+        .release-notes-content { text-align: left; padding-top: 1rem; }
+        .release-notes-content h1, .release-notes-content h2, .release-notes-content h3 { font-weight: 700; color: var(--mystic); margin-bottom: 0.5rem; }
+        .release-notes-content ul { list-style-type: disc; padding-left: 1.5rem; }
+        .release-notes-content li { margin-bottom: 0.25rem; }
+
+        /* --- Estilos para la Transición de Página --- */
+        .page-container { position: relative; width: 100%; height: 100%; }
+        .page {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
         }
-        /* Estilos para el contenido de las notas (generado por Markdown) */
-        .release-notes-content {
-            text-align: left;
-            padding-top: 1rem;
-        }
-        .release-notes-content h1, .release-notes-content h2, .release-notes-content h3 {
-            font-weight: 700;
-            color: var(--mystic);
-            margin-bottom: 0.5rem;
-        }
-        .release-notes-content ul {
-            list-style-type: disc;
-            padding-left: 1.5rem;
-        }
-        .release-notes-content li {
-            margin-bottom: 0.25rem;
-        }
+        .page.active { transform: translateX(0); }
+        .page.inactive-left { transform: translateX(-100%); }
+        .page.inactive-right { transform: translateX(100%); }
     </style>
 </head>
 <body class="w-full min-h-screen flex items-center justify-center p-4">
 
-    <!-- Contenedor principal que permite el scroll y tiene padding para el footer -->
-    <div class="w-full pb-32 md:pb-24">
-        <main class="glass-card w-full max-w-md mx-auto rounded-2xl p-6 md:p-12 shadow-2xl">
-            <div class="text-center flex flex-col items-center space-y-5">
-                <div class="w-24 h-24 md:w-32 md:h-32 -mt-16 md:-mt-24">
-                    <img src="piruicon.png" alt="Logo de Worldnet Status Sender" class="w-full h-full object-contain rounded-full shadow-lg bg-mirage p-2">
-                </div>
-                <div>
-                    <h1 class="text-2xl md:text-4xl font-bold text-mystic">
-                        Worldnet Network Status Sender
-                    </h1>
-                    <p class="text-mystic/80 mt-2 text-sm md:text-base">
-                        Get Latest Version.
-                    </p>
-                </div>
-                <div class="flex flex-col items-center space-y-3 pt-2 w-full">
-                    <a href="/api/download" class="cursor-pointer bg-boston-blue px-6 py-3 rounded-lg text-mystic font-semibold tracking-wider btn-effect inline-flex items-center space-x-3">
-                        <img src="winlogo.png" alt="Windows Logo" class="w-5 h-5">
-                        <span>Download</span>
-                    </a>
-                    <!-- Botón para mostrar/ocultar notas -->
-                    <button id="toggle-notes-btn" class="text-sm text-mystic/70 hover:text-mystic transition-colors duration-200 p-1 hidden">
-                        Version: <span id="version-display" class="font-semibold">Loading...</span>
-                        <svg id="chevron-icon" class="inline-block w-4 h-4 ml-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                    </button>
-                    <!-- Contenedor de las notas (inicialmente oculto) -->
-                    <div id="release-notes-container" class="release-notes w-full">
-                        <div id="release-notes-content" class="release-notes-content text-mystic/90 text-sm"></div>
+    <div class="page-container">
+        <!-- ===== PÁGINA PRINCIPAL ===== -->
+        <div id="main-page" class="page active">
+            <div class="w-full h-full flex flex-col justify-center items-center pb-32 md:pb-24">
+                <main class="glass-card w-full max-w-md mx-auto rounded-2xl p-6 md:p-12 shadow-2xl">
+                    <div class="text-center flex flex-col items-center space-y-5">
+                        <div class="w-24 h-24 md:w-32 md:h-32 -mt-16 md:-mt-24">
+                            <img src="piruicon.png" alt="Logo de Worldnet Status Sender" class="w-full h-full object-contain rounded-full shadow-lg bg-mirage p-2">
+                        </div>
+                        <div>
+                            <h1 class="text-2xl md:text-4xl font-bold text-mystic">
+                                Worldnet Network Status Sender
+                            </h1>
+                            <p class="text-mystic/80 mt-2 text-sm md:text-base">
+                                Get Latest Version.
+                            </p>
+                        </div>
+                        <div class="flex flex-col items-center space-y-3 pt-2 w-full">
+                            <a href="/api/download" class="cursor-pointer bg-boston-blue px-6 py-3 rounded-lg text-mystic font-semibold tracking-wider btn-effect inline-flex items-center space-x-3">
+                                <img src="winlogo.png" alt="Windows Logo" class="w-5 h-5">
+                                <span>Download</span>
+                            </a>
+                            <button id="toggle-notes-btn" class="text-sm text-mystic/70 hover:text-mystic transition-colors duration-200 p-1 hidden">
+                                Version: <span id="version-display" class="font-semibold">Loading...</span>
+                                <svg id="chevron-icon" class="inline-block w-4 h-4 ml-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
+                            <div id="release-notes-container" class="release-notes w-full">
+                                <div id="release-notes-content" class="release-notes-content text-mystic/90 text-sm"></div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </main>
+                </main>
 
-        <!-- Sección de Capturas de Pantalla -->
-        <section class="w-full max-w-4xl mx-auto mt-12 px-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="glass-card rounded-lg p-2 shadow-lg">
-                    <img src="scr1.png" alt="Captura de pantalla 1 de la aplicación" class="rounded-md w-full h-auto">
-                </div>
-                <div class="glass-card rounded-lg p-2 shadow-lg">
-                    <img src="scr2.png" alt="Captura de pantalla 2 de la aplicación" class="rounded-md w-full h-auto">
-                </div>
+                <section class="w-full max-w-4xl mx-auto mt-12 px-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="glass-card rounded-lg p-2 shadow-lg">
+                            <img src="scr1.png" alt="Captura de pantalla 1 de la aplicación" class="rounded-md w-full h-auto">
+                        </div>
+                        <div class="glass-card rounded-lg p-2 shadow-lg">
+                            <img src="scr2.png" alt="Captura de pantalla 2 de la aplicación" class="rounded-md w-full h-auto">
+                        </div>
+                    </div>
+                </section>
             </div>
-        </section>
+        </div>
+
+        <!-- ===== PÁGINA DE CRÉDITOS ===== -->
+        <div id="credits-page" class="page inactive-right">
+            <div class="w-full h-full flex items-center justify-center">
+                <main class="glass-card w-full max-w-lg mx-auto rounded-2xl p-8 shadow-2xl">
+                    <h1 class="text-2xl md:text-3xl font-bold text-mystic text-center">Créditos</h1>
+                    <div class="mt-6 text-mystic/90 space-y-4">
+                        <p>Este proyecto es posible gracias a las contribuciones y el apoyo de las siguientes personas:</p>
+                        <ul class="space-y-3">
+                            <li>
+                                Alex Berrios (<a href="https://github.com/lologaby" target="_blank" rel="noopener noreferrer" class="font-semibold hover:text-boston-blue transition-colors">GitHub</a>)
+                                <span class="block text-sm text-mystic/70 pl-4">- Desarrollador Principal</span>
+                            </li>
+                            <li>
+                                Samuel O. Rivera (<a href="https://github.com/sabdielis" target="_blank" rel="noopener noreferrer" class="font-semibold hover:text-boston-blue transition-colors">GitHub</a>, <a href="https://www.linkedin.com/in/samuel-o-rivera/" target="_blank" rel="noopener noreferrer" class="font-semibold hover:text-boston-blue transition-colors">LinkedIn</a>)
+                                <span class="block text-sm text-mystic/70 pl-4">- Diseño de UI y modo oscuro</span>
+                            </li>
+                            <li>
+                                Genesis D. Ortiz (<a href="https://www.linkedin.com/in/genesis-d-ortiz-203b84214/" target="_blank" rel="noopener noreferrer" class="font-semibold hover:text-boston-blue transition-colors">LinkedIn</a>)
+                                <span class="block text-sm text-mystic/70 pl-4">- Creación de la plantilla de reporte</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mt-8 text-center">
+                        <button id="back-to-main-btn" class="text-sm text-boston-blue hover:text-shakespeare font-semibold transition-colors">
+                            &larr; Volver a la página principal
+                        </button>
+                    </div>
+                </main>
+            </div>
+        </div>
     </div>
     
     <!-- Footer anclado a la parte inferior de la pantalla -->
     <footer class="fixed bottom-0 left-0 right-0 w-full p-4 bg-mirage/30 backdrop-blur-sm">
         <!-- Layout para Escritorio -->
         <div class="hidden md:flex w-full max-w-7xl mx-auto items-center justify-between">
-            <!-- Izquierda: Botón de GitHub -->
             <a href="https://github.com/lologaby" target="_blank" rel="noopener noreferrer" class="text-mystic/70">
                 <div class="group relative">
                     <button>
@@ -141,27 +169,32 @@
                     <span class="absolute -bottom-10 left-[50%] -translate-x-[50%] z-20 origin-bottom scale-0 px-3 rounded-lg border border-mystic/20 bg-mirage py-2 text-sm font-bold shadow-md transition-all duration-300 ease-in-out group-hover:scale-100 text-mystic">GitHub</span>
                 </div>
             </a>
-            <!-- Centro: Firma -->
-            <p class="text-mystic/60 text-sm">Desarrollado por <a href="https://alexberrios.com" target="_blank" rel="noopener noreferrer" class="gradient-link">alexberrios.com</a></p>
-            <!-- Derecha: Buy Me a Coffee (con texto) -->
+            <div class="text-mystic/60 text-sm">
+                <span>Desarrollado por <a href="https://alexberrios.com" target="_blank" rel="noopener noreferrer" class="gradient-link">alexberrios.com</a></span>
+                <span class="text-mystic/40 mx-2">|</span>
+                <button id="go-to-credits-btn" class="hover:text-mystic transition-colors">Créditos</button>
+            </div>
             <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="berr.io" data-color="#4da6c1" data-emoji="" data-font="Cookie" data-text="Págate los Café" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#FFDD00"></script>
         </div>
         <!-- Layout para Móviles -->
         <div class="md:hidden flex flex-col items-center gap-4">
             <div class="flex items-center justify-center gap-8">
-                <!-- GitHub -->
                 <a href="https://github.com/lologaby" target="_blank" rel="noopener noreferrer" class="text-mystic/70">
                     <svg stroke-linejoin="round" stroke-linecap="round" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" class="w-8"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
                 </a>
-                <!-- Buy Me a Coffee (solo icono) -->
                 <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="berr.io" data-color="#FFDD00" data-emoji="" data-font="Cookie" data-text="" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff"></script>
             </div>
-            <p class="text-mystic/60 text-sm">Desarrollado por <a href="https://alexberrios.com" target="_blank" rel="noopener noreferrer" class="gradient-link">alexberrios.com</a></p>
+            <div class="text-mystic/60 text-sm">
+                <span>Desarrollado por <a href="https://alexberrios.com" target="_blank" rel="noopener noreferrer" class="gradient-link">alexberrios.com</a></span>
+                <span class="text-mystic/40 mx-2">|</span>
+                <button id="go-to-credits-btn-mobile" class="hover:text-mystic transition-colors">Créditos</button>
+            </div>
         </div>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // --- Lógica para la Versión y Notas ---
             const versionElement = document.getElementById('version-display');
             const toggleBtn = document.getElementById('toggle-notes-btn');
             const notesContainer = document.getElementById('release-notes-container');
@@ -173,14 +206,9 @@
                 .then(data => {
                     if (data.version) {
                         versionElement.textContent = data.version;
-                        toggleBtn.classList.remove('hidden'); // Muestra el botón de versión
-                    } else {
-                        versionElement.textContent = 'N/A';
-                    }
-                    if (data.notes) {
-                        // Convierte Markdown a HTML y lo inserta
-                        notesContent.innerHTML = marked.parse(data.notes);
-                    }
+                        toggleBtn.classList.remove('hidden');
+                    } else { versionElement.textContent = 'N/A'; }
+                    if (data.notes) { notesContent.innerHTML = marked.parse(data.notes); }
                 })
                 .catch(error => {
                     console.error('Error al obtener la versión:', error);
@@ -197,6 +225,31 @@
                     chevronIcon.classList.add('rotate-180');
                 }
             });
+
+            // --- Lógica para la Transición de Páginas ---
+            const mainPage = document.getElementById('main-page');
+            const creditsPage = document.getElementById('credits-page');
+            const goToCreditsBtn = document.getElementById('go-to-credits-btn');
+            const goToCreditsBtnMobile = document.getElementById('go-to-credits-btn-mobile');
+            const backToMainBtn = document.getElementById('back-to-main-btn');
+
+            const showCredits = () => {
+                mainPage.classList.add('inactive-left');
+                mainPage.classList.remove('active');
+                creditsPage.classList.add('active');
+                creditsPage.classList.remove('inactive-right');
+            };
+
+            const showMain = () => {
+                mainPage.classList.remove('inactive-left');
+                mainPage.classList.add('active');
+                creditsPage.classList.remove('active');
+                creditsPage.classList.add('inactive-right');
+            };
+            
+            goToCreditsBtn.addEventListener('click', showCredits);
+            goToCreditsBtnMobile.addEventListener('click', showCredits);
+            backToMainBtn.addEventListener('click', showMain);
         });
     </script>
 
