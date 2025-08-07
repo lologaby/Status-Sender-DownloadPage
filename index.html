@@ -68,6 +68,7 @@
             width: 100%; height: 100%;
             transition: transform 0.5s ease-in-out;
             overflow-y: auto; /* Permite el scroll dentro de la página activa */
+            padding: 2rem 1rem; /* Padding para todo el contenido de la página */
         }
         .page.active { transform: translateX(0); }
         .page.inactive-left { transform: translateX(-100%); }
@@ -79,32 +80,32 @@
         .carousel-item { flex: 0 0 100%; scroll-snap-align: center; }
         .lightbox {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
+            background-color: rgba(0, 0, 0, 0.85);
             display: flex; align-items: center; justify-content: center;
             z-index: 1000; opacity: 0; pointer-events: none;
             transition: opacity 0.3s ease-in-out;
         }
         .lightbox.active { opacity: 1; pointer-events: auto; }
-        .lightbox img { max-width: 90%; max-height: 90%; object-fit: contain; }
+        .lightbox img { max-width: 90%; max-height: 90%; object-fit: contain; box-shadow: 0 0 40px rgba(0,0,0,0.5); }
         .lightbox-close {
             position: absolute; top: 1.5rem; right: 1.5rem;
-            color: white; font-size: 2rem; cursor: pointer;
+            color: white; font-size: 2.5rem; cursor: pointer; line-height: 1;
         }
     </style>
 </head>
-<body class="w-full min-h-screen flex items-center justify-center p-0 md:p-4">
+<body class="w-full min-h-screen">
 
     <div class="page-container">
         <!-- ===== PÁGINA PRINCIPAL ===== -->
         <div id="main-page" class="page active">
-            <div class="w-full h-full flex flex-col items-center pt-8 pb-40 md:pb-32">
-                <main class="glass-card w-full max-w-md mx-auto rounded-2xl p-6 md:p-12 shadow-2xl flex-shrink-0">
+            <div class="w-full h-full flex flex-col items-center pt-16 md:pt-24 pb-40 md:pb-32">
+                <main class="glass-card w-full max-w-md lg:max-w-lg mx-auto rounded-2xl p-6 md:p-10 shadow-2xl flex-shrink-0">
                     <div class="text-center flex flex-col items-center space-y-5">
-                        <div class="w-24 h-24 md:w-32 md:h-32 -mt-16 md:-mt-24">
+                        <div class="w-24 h-24 md:w-28 md:h-28 -mt-20 md:-mt-24">
                             <img src="piruicon.png" alt="Logo de Worldnet Status Sender" class="w-full h-full object-contain rounded-full shadow-lg bg-mirage p-2">
                         </div>
                         <div>
-                            <h1 class="text-2xl md:text-4xl font-bold text-mystic">
+                            <h1 class="text-2xl md:text-3xl font-bold text-mystic">
                                 Worldnet Network Status Sender
                             </h1>
                             <p class="text-mystic/80 mt-2 text-sm md:text-base">
@@ -128,13 +129,13 @@
                 </main>
 
                 <!-- Sección de Capturas de Pantalla -->
-                <section class="w-full max-w-4xl mx-auto mt-12 px-4">
+                <section class="w-full max-w-5xl mx-auto mt-16 px-4">
                     <!-- Vista Escritorio -->
-                    <div class="hidden md:grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="glass-card rounded-lg p-2 shadow-lg cursor-pointer screenshot">
+                    <div class="hidden md:grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="glass-card rounded-lg p-2 shadow-lg cursor-pointer screenshot transition-transform duration-300 hover:scale-105">
                             <img src="scr1.png" alt="Captura de pantalla 1 de la aplicación" class="rounded-md w-full h-auto">
                         </div>
-                        <div class="glass-card rounded-lg p-2 shadow-lg cursor-pointer screenshot">
+                        <div class="glass-card rounded-lg p-2 shadow-lg cursor-pointer screenshot transition-transform duration-300 hover:scale-105">
                             <img src="scr2.png" alt="Captura de pantalla 2 de la aplicación" class="rounded-md w-full h-auto">
                         </div>
                     </div>
