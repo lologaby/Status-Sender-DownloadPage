@@ -41,9 +41,14 @@
             -webkit-backdrop-filter: blur(15px); /* Para Safari */
             border: 1px solid rgba(218, 229, 234, 0.1); /* --mystic con transparencia */
         }
-        /* Sombra personalizada para el botón */
-        .btn-shadow {
-             box-shadow: 0 8px 25px -5px var(--boston-blue), 0 4px 6px -4px var(--boston-blue);
+        /* Sombra y efecto de brillo para el botón */
+        .btn-effect {
+             box-shadow: 0 4px 15px -5px rgba(49, 155, 186, 0.4);
+             transition: all 0.3s ease-in-out;
+        }
+        .btn-effect:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px 3px rgba(80, 172, 204, 0.5);
         }
         /* Animación para el gradiente del texto */
         @keyframes gradient-text-animation {
@@ -86,28 +91,16 @@
                 </p>
                 <!-- Contenedor para la versión -->
                 <p class="text-sm text-mystic/70 mt-4">
-                    Versión: <span id="version-display" class="font-semibold bg-mirage/50 px-2 py-1 rounded-md">Cargando...</span>
+                    Version: <span id="version-display" class="font-semibold bg-mirage/50 px-2 py-1 rounded-md">Loading...</span>
                 </p>
             </div>
 
             <!-- BOTÓN DE DESCARGA -->
             <a href="/api/download" 
-               class="cursor-pointer bg-boston-blue px-6 py-3 rounded-lg text-mystic font-semibold tracking-wider btn-shadow animate-bounce hover:animate-none transition-all duration-300 ease-in-out hover:bg-shakespeare hover:shadow-lg hover:scale-105 inline-flex items-center space-x-2">
-                <svg
-                    class="w-5 h-5"
-                    stroke="currentColor"
-                    stroke-width="2.5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <path
-                        d="M19.5 13.5 12 21m0 0-7.5-7.5M12 21V3"
-                        stroke-linejoin="round"
-                        stroke-linecap="round"
-                    ></path>
-                </svg>
-                <span>Descargar para Windows</span>
+               class="cursor-pointer bg-boston-blue px-6 py-3 rounded-lg text-mystic font-semibold tracking-wider btn-effect inline-flex items-center space-x-3">
+                <!-- Windows Logo -->
+                <img src="winlogo.png" alt="Windows Logo" class="w-5 h-5">
+                <span>Download</span>
             </a>
         </div>
     </main>
@@ -139,7 +132,7 @@
                     if (data && data.version) {
                         versionElement.textContent = data.version;
                     } else {
-                        versionElement.textContent = 'No disponible';
+                        versionElement.textContent = 'N/A';
                     }
                 })
                 .catch(error => {
