@@ -28,7 +28,7 @@
             background: linear-gradient(-45deg, var(--mirage), var(--congress-blue), var(--mirage), var(--boston-blue));
             background-size: 400% 400%;
             animation: gradientBG 25s ease infinite;
-            overflow: hidden; /* Clave para el efecto SPA */
+            overflow: hidden; /* Clave para el efecto SPA y sin scroll */
         }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         .glass-card {
@@ -67,17 +67,19 @@
             position: absolute; top: 0; left: 0;
             width: 100%; height: 100%;
             transition: transform 0.5s ease-in-out;
-            overflow-y: auto; /* Permite el scroll dentro de la página activa */
-            padding: 2rem 1rem; /* Padding para todo el contenido de la página */
+            overflow: hidden; /* Evita el scroll en las páginas */
         }
         .page.active { transform: translateX(0); }
         .page.inactive-left { transform: translateX(-100%); }
         .page.inactive-right { transform: translateX(100%); }
 
-        /* --- Estilos para el Carrusel y Lightbox --- */
-        .carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none; }
-        .carousel::-webkit-scrollbar { display: none; }
-        .carousel-item { flex: 0 0 100%; scroll-snap-align: center; }
+        /* --- Estilos para el Slideshow y Lightbox --- */
+        .slideshow-container { position: relative; width: 100%; height: 100%; }
+        .slide {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; transition: opacity 1s ease-in-out;
+        }
+        .slide.active { opacity: 1; }
         .lightbox {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.85);
@@ -98,61 +100,54 @@
     <div class="page-container">
         <!-- ===== PÁGINA PRINCIPAL ===== -->
         <div id="main-page" class="page active">
-            <div class="w-full h-full flex flex-col items-center pt-16 md:pt-24 pb-40 md:pb-32">
-                <main class="glass-card w-full max-w-md lg:max-w-lg mx-auto rounded-2xl p-6 md:p-10 shadow-2xl flex-shrink-0">
-                    <div class="text-center flex flex-col items-center space-y-5">
-                        <div class="w-24 h-24 md:w-28 md:h-28 -mt-20 md:-mt-24">
-                            <img src="piruicon.png" alt="Logo de Worldnet Status Sender" class="w-full h-full object-contain rounded-full shadow-lg bg-mirage p-2">
-                        </div>
-                        <div>
-                            <h1 class="text-2xl md:text-3xl font-bold text-mystic">
-                                Worldnet Network Status Sender
-                            </h1>
-                            <p class="text-mystic/80 mt-2 text-sm md:text-base">
-                                Get Latest Version.
-                            </p>
-                        </div>
-                        <div class="flex flex-col items-center space-y-3 pt-2 w-full">
-                            <a href="/api/download" class="cursor-pointer bg-boston-blue px-6 py-3 rounded-lg text-mystic font-semibold tracking-wider btn-effect inline-flex items-center space-x-3">
-                                <img src="winlogo.png" alt="Windows Logo" class="w-5 h-5">
-                                <span>Download</span>
-                            </a>
-                            <button id="toggle-notes-btn" class="text-sm text-mystic/70 hover:text-mystic transition-colors duration-200 p-1 hidden">
-                                Version: <span id="version-display" class="font-semibold">Loading...</span>
-                                <svg id="chevron-icon" class="inline-block w-4 h-4 ml-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                            </button>
-                            <div id="release-notes-container" class="release-notes w-full">
-                                <div id="release-notes-content" class="release-notes-content text-mystic/90 text-sm"></div>
+            <div class="w-full h-full flex flex-col md:flex-row items-center justify-center gap-8 p-4 md:p-8">
+                <!-- Columna Izquierda: Tarjeta de Descarga -->
+                <div class="w-full md:w-1/2 lg:w-2/5 flex justify-center">
+                    <main class="glass-card w-full max-w-md rounded-2xl p-6 md:p-10 shadow-2xl flex-shrink-0">
+                        <div class="text-center flex flex-col items-center space-y-5">
+                            <div class="w-24 h-24 md:w-28 md:h-28 -mt-16 md:-mt-20">
+                                <img src="piruicon.png" alt="Logo de Worldnet Status Sender" class="w-full h-full object-contain rounded-full shadow-lg bg-mirage p-2">
+                            </div>
+                            <div>
+                                <h1 class="text-2xl md:text-3xl font-bold text-mystic">
+                                    Worldnet Network Status Sender
+                                </h1>
+                                <p class="text-mystic/80 mt-2 text-sm md:text-base">
+                                    Get Latest Version.
+                                </p>
+                            </div>
+                            <div class="flex flex-col items-center space-y-3 pt-2 w-full">
+                                <a href="/api/download" class="cursor-pointer bg-boston-blue px-6 py-3 rounded-lg text-mystic font-semibold tracking-wider btn-effect inline-flex items-center space-x-3">
+                                    <img src="winlogo.png" alt="Windows Logo" class="w-5 h-5">
+                                    <span>Download</span>
+                                </a>
+                                <button id="toggle-notes-btn" class="text-sm text-mystic/70 hover:text-mystic transition-colors duration-200 p-1 hidden">
+                                    Version: <span id="version-display" class="font-semibold">Loading...</span>
+                                    <svg id="chevron-icon" class="inline-block w-4 h-4 ml-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                </button>
+                                <div id="release-notes-container" class="release-notes w-full">
+                                    <div id="release-notes-content" class="release-notes-content text-mystic/90 text-sm"></div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </main>
-
-                <!-- Sección de Capturas de Pantalla -->
-                <section class="w-full max-w-5xl mx-auto mt-16 px-4">
-                    <!-- Vista Escritorio -->
-                    <div class="hidden md:grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div class="glass-card rounded-lg p-2 shadow-lg cursor-pointer screenshot transition-transform duration-300 hover:scale-105">
-                            <img src="scr1.png" alt="Captura de pantalla 1 de la aplicación" class="rounded-md w-full h-auto">
-                        </div>
-                        <div class="glass-card rounded-lg p-2 shadow-lg cursor-pointer screenshot transition-transform duration-300 hover:scale-105">
-                            <img src="scr2.png" alt="Captura de pantalla 2 de la aplicación" class="rounded-md w-full h-auto">
-                        </div>
-                    </div>
-                    <!-- Vista Móvil (Carrusel) -->
-                    <div class="md:hidden relative">
-                        <div id="carousel" class="carousel rounded-lg">
-                            <div class="carousel-item p-1 screenshot cursor-pointer">
-                                <div class="glass-card rounded-lg p-2"><img src="scr1.png" class="rounded-md"></div>
+                    </main>
+                </div>
+                <!-- Columna Derecha: Slideshow de Capturas -->
+                <div class="w-full md:w-1/2 lg:w-3/5 h-64 md:h-auto md:max-h-[60vh]">
+                    <div class="glass-card w-full h-full rounded-2xl p-3 shadow-2xl">
+                        <div id="slideshow" class="slideshow-container rounded-lg overflow-hidden">
+                            <div class="slide active screenshot cursor-pointer">
+                                <img src="scr1.png" alt="Captura de pantalla 1" class="w-full h-full object-contain">
                             </div>
-                            <div class="carousel-item p-1 screenshot cursor-pointer">
-                                <div class="glass-card rounded-lg p-2"><img src="scr2.png" class="rounded-md"></div>
+                            <div class="slide screenshot cursor-pointer">
+                                <img src="scr2.png" alt="Captura de pantalla 2" class="w-full h-full object-contain">
                             </div>
                         </div>
-                        <button id="prevBtn" class="absolute top-1/2 left-2 -translate-y-1/2 bg-mirage/50 p-2 rounded-full text-white">&lt;</button>
-                        <button id="nextBtn" class="absolute top-1/2 right-2 -translate-y-1/2 bg-mirage/50 p-2 rounded-full text-white">&gt;</button>
+                         <div id="slide-dots" class="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
+                            <!-- Dots will be generated by JS -->
+                        </div>
                     </div>
-                </section>
+                </div>
             </div>
         </div>
 
@@ -279,23 +274,60 @@
             goToCreditsBtnMobile.addEventListener('click', showCredits);
             backToMainBtn.addEventListener('click', showMain);
 
-            // --- Lógica para el Carrusel y Lightbox ---
-            const carousel = document.getElementById('carousel');
-            const nextBtn = document.getElementById('nextBtn');
-            const prevBtn = document.getElementById('prevBtn');
+            // --- Lógica para el Slideshow y Lightbox ---
+            const slideshow = document.getElementById('slideshow');
+            const slides = slideshow.querySelectorAll('.slide');
+            const dotsContainer = document.getElementById('slide-dots');
+            let currentSlide = 0;
+            let slideInterval;
+
+            const createDots = () => {
+                slides.forEach((_, i) => {
+                    const dot = document.createElement('button');
+                    dot.classList.add('w-2', 'h-2', 'rounded-full', 'bg-mystic/40', 'transition-colors');
+                    dot.addEventListener('click', () => {
+                        goToSlide(i);
+                        resetInterval();
+                    });
+                    dotsContainer.appendChild(dot);
+                });
+            };
+
+            const updateDots = () => {
+                const dots = dotsContainer.querySelectorAll('button');
+                dots.forEach((dot, i) => {
+                    dot.classList.toggle('bg-mystic', i === currentSlide);
+                    dot.classList.toggle('bg-mystic/40', i !== currentSlide);
+                });
+            };
+
+            const goToSlide = (n) => {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = (n + slides.length) % slides.length;
+                slides[currentSlide].classList.add('active');
+                updateDots();
+            };
+
+            const nextSlide = () => goToSlide(currentSlide + 1);
+
+            const startInterval = () => {
+                slideInterval = setInterval(nextSlide, 5000); // Cambia cada 5 segundos
+            };
+            
+            const resetInterval = () => {
+                clearInterval(slideInterval);
+                startInterval();
+            };
+
+            createDots();
+            goToSlide(0);
+            startInterval();
+
+            // Lightbox
             const screenshots = document.querySelectorAll('.screenshot');
             const lightbox = document.getElementById('lightbox');
             const lightboxImg = document.getElementById('lightbox-img');
             const lightboxClose = document.getElementById('lightbox-close');
-
-            if (carousel) {
-                nextBtn.addEventListener('click', () => {
-                    carousel.scrollBy({ left: carousel.offsetWidth, behavior: 'smooth' });
-                });
-                prevBtn.addEventListener('click', () => {
-                    carousel.scrollBy({ left: -carousel.offsetWidth, behavior: 'smooth' });
-                });
-            }
             
             screenshots.forEach(ss => {
                 ss.addEventListener('click', () => {
