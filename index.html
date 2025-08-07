@@ -78,7 +78,6 @@
         .slide {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             opacity: 0; transition: opacity 1s ease-in-out;
-            background-color: rgba(0,0,0,0.1); /* Fondo para depuración */
         }
         .slide.active { opacity: 1; }
         .lightbox {
@@ -138,10 +137,10 @@
                     <div class="glass-card w-full h-full rounded-2xl p-3 shadow-2xl">
                         <div id="slideshow" class="slideshow-container rounded-lg overflow-hidden">
                             <div class="slide active screenshot cursor-pointer">
-                                <img src="scr1.png" alt="Captura de pantalla 1" class="w-full h-full object-contain">
+                                <img src="scr1.png" alt="Captura de pantalla 1" class="w-full h-full object-contain" onerror="this.onerror=null;this.src='https://placehold.co/800x600/19202e/dae5ea?text=scr1.png%20no%20encontrada';">
                             </div>
                             <div class="slide screenshot cursor-pointer">
-                                <img src="scr2.png" alt="Captura de pantalla 2" class="w-full h-full object-contain">
+                                <img src="scr2.png" alt="Captura de pantalla 2" class="w-full h-full object-contain" onerror="this.onerror=null;this.src='https://placehold.co/800x600/19202e/dae5ea?text=scr2.png%20no%20encontrada';">
                             </div>
                         </div>
                          <div id="slide-dots" class="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
