@@ -68,6 +68,10 @@
             display: inline-block;
             animation: gradient-text-animation 5s ease-in-out infinite;
         }
+        /* Estilo para el hover del icono de GitHub */
+        .hover\:stroke-boston-blue:hover {
+            stroke: var(--boston-blue);
+        }
     </style>
 </head>
 <body class="h-full flex items-center justify-center p-4">
@@ -89,28 +93,45 @@
                 <p class="text-mystic/80 mt-2">
                     Get Latest Version.
                 </p>
-                <!-- Contenedor para la versión -->
-                <p class="text-sm text-mystic/70 mt-4">
-                    Version: <span id="version-display" class="font-semibold bg-mirage/50 px-2 py-1 rounded-md">Loading...</span>
-                </p>
             </div>
 
-            <!-- BOTÓN DE DESCARGA -->
-            <a href="/api/download" 
-               class="cursor-pointer bg-boston-blue px-6 py-3 rounded-lg text-mystic font-semibold tracking-wider btn-effect inline-flex items-center space-x-3">
-                <!-- Windows Logo -->
-                <img src="winlogo.png" alt="Windows Logo" class="w-5 h-5">
-                <span>Download</span>
-            </a>
+            <!-- Sección de botón y versión -->
+            <div class="flex flex-col items-center space-y-3 pt-2">
+                <!-- BOTÓN DE DESCARGA -->
+                <a href="/api/download" 
+                   class="cursor-pointer bg-boston-blue px-6 py-3 rounded-lg text-mystic font-semibold tracking-wider btn-effect inline-flex items-center space-x-3">
+                    <!-- Windows Logo -->
+                    <img src="winlogo.png" alt="Windows Logo" class="w-5 h-5">
+                    <span>Download</span>
+                </a>
+                <!-- Contenedor para la versión -->
+                <p class="text-sm text-mystic/70">
+                    Version: <span id="version-display" class="font-semibold">Loading...</span>
+                </p>
+            </div>
         </div>
     </main>
     
-    <!-- Footer con "Buy Me a Coffee" -->
-    <footer class="absolute bottom-4 left-0 right-0 px-6">
-        <div class="w-full max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-center md:justify-between gap-4">
-            <p class="text-mystic/60 text-sm order-2 md:order-1">Desarrollado por <a href="https://alexberrios.com" target="_blank" rel="noopener noreferrer" class="gradient-link">alexberrios.com</a></p>
-            <div class="order-1 md:order-2">
-                <!-- Buy Me A Coffee Button -->
+    <!-- Footer con nueva distribución -->
+    <footer class="absolute bottom-0 left-0 right-0 w-full p-4">
+        <div class="w-full max-w-7xl mx-auto flex items-center justify-between">
+            <!-- Izquierda: Botón de GitHub -->
+            <div class="hidden md:block">
+                <a href="https://github.com/lologaby" target="_blank" rel="noopener noreferrer" class="text-mystic/70">
+                    <div class="group relative">
+                        <button>
+                            <svg stroke-linejoin="round" stroke-linecap="round" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" class="w-8 hover:scale-125 duration-200 hover:stroke-boston-blue"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                        </button>
+                        <span class="absolute -top-14 left-[50%] -translate-x-[50%] z-20 origin-left scale-0 px-3 rounded-lg border border-mystic/20 bg-mirage py-2 text-sm font-bold shadow-md transition-all duration-300 ease-in-out group-hover:scale-100 text-mystic">GitHub</span>
+                    </div>
+                </a>
+            </div>
+            <!-- Centro: Firma -->
+            <div class="text-center">
+                <p class="text-mystic/60 text-sm">Desarrollado por <a href="https://alexberrios.com" target="_blank" rel="noopener noreferrer" class="gradient-link">alexberrios.com</a></p>
+            </div>
+            <!-- Derecha: Buy Me a Coffee -->
+            <div class="hidden md:block">
                 <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="berr.io" data-color="#4da6c1" data-emoji=""  data-font="Cookie" data-text="Págate los Café" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#FFDD00" ></script>
             </div>
         </div>
