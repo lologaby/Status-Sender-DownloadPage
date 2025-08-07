@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WNSS - Download Portal</title>
-    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="icon" type="image/png" href="./favicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Librería para convertir Markdown a HTML -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* WNET Color Palette */
+        /* Paleta de colores WNET */
         :root {
             --mirage: #19202e;
             --mystic: #dae5ea;
@@ -28,15 +28,18 @@
             background: linear-gradient(-45deg, var(--mirage), var(--congress-blue), var(--mirage), var(--boston-blue));
             background-size: 400% 400%;
             animation: gradientBG 25s ease infinite;
-            overflow: hidden; /* Clave para el efecto SPA y sin scroll */
         }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        /* Estilo de tarjeta con efecto de vidrio */
         .glass-card {
             background: rgba(25, 32, 46, 0.6);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(218, 229, 234, 0.1);
         }
+        
+        /* Efecto de hover para botones */
         .btn-effect {
              box-shadow: 0 4px 15px -5px rgba(49, 155, 186, 0.4);
              transition: all 0.3s ease-in-out;
@@ -45,6 +48,8 @@
             transform: translateY(-3px);
             box-shadow: 0 0 20px 3px rgba(80, 172, 204, 0.5);
         }
+        
+        /* Animación de gradiente para texto */
         @keyframes gradient-text-animation { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         .gradient-link {
             background: linear-gradient(90deg, var(--shakespeare), var(--mystic), var(--boston-blue), var(--shakespeare));
@@ -54,27 +59,28 @@
             font-weight: 500; display: inline-block;
             animation: gradient-text-animation 5s ease-in-out infinite;
         }
-        .hover\:stroke-boston-blue:hover { stroke: var(--boston-blue); }
+        
+        /* Estilos para las notas de la versión (release notes) */
         .release-notes { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; }
         .release-notes-content { text-align: left; padding-top: 1rem; }
         .release-notes-content h1, .release-notes-content h2, .release-notes-content h3 { font-weight: 700; color: var(--mystic); margin-bottom: 0.5rem; }
         .release-notes-content ul { list-style-type: disc; padding-left: 1.5rem; }
         .release-notes-content li { margin-bottom: 0.25rem; }
 
-        /* --- Estilos para la Transición de Página --- */
-        .page-container { position: relative; width: 100%; height: 100vh; }
+        /* --- Estilos para la Transición de Página (efecto SPA) --- */
+        .page-container { position: relative; width: 100%; height: 100vh; overflow: hidden; }
         .page {
             position: absolute; top: 0; left: 0;
             width: 100%; height: 100%;
             transition: transform 0.5s ease-in-out;
-            overflow: hidden; /* Evita el scroll en las páginas */
+            overflow-y: auto; /* Permite scroll dentro de la página si el contenido es muy largo */
+            padding-bottom: 120px; /* Espacio para el footer fijo */
         }
         .page.active { transform: translateX(0); }
         .page.inactive-left { transform: translateX(-100%); }
         .page.inactive-right { transform: translateX(100%); }
 
         /* --- Estilos para el Slideshow y Lightbox --- */
-        .slideshow-container { position: relative; width: 100%; height: 100%; }
         .slide {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             opacity: 0; transition: opacity 1s ease-in-out;
@@ -100,13 +106,16 @@
     <div class="page-container">
         <!-- ===== PÁGINA PRINCIPAL ===== -->
         <div id="main-page" class="page active">
-            <div class="w-full h-full flex flex-col md:flex-row items-center justify-center gap-8 p-4 md:p-8">
+            <!-- Contenedor principal flexible y responsivo -->
+            <div class="w-full h-full flex flex-col lg:flex-row items-center justify-center gap-8 p-4 sm:p-8">
+                
                 <!-- Columna Izquierda: Tarjeta de Descarga -->
-                <div class="w-full md:w-1/2 lg:w-2/5 flex justify-center">
+                <div class="w-full lg:w-2/5 flex justify-center lg:justify-end">
                     <main class="glass-card w-full max-w-md rounded-2xl p-6 md:p-10 shadow-2xl flex-shrink-0">
                         <div class="text-center flex flex-col items-center space-y-5">
                             <div class="w-24 h-24 md:w-28 md:h-28 -mt-16 md:-mt-20">
-                                <img src="piruicon.png" alt="Logo de Worldnet Status Sender" class="w-full h-full object-contain rounded-full shadow-lg bg-mirage p-2">
+                                <!-- RUTA CORREGIDA -->
+                                <img src="./piruicon.png" alt="Logo de Worldnet Status Sender" class="w-full h-full object-contain rounded-full shadow-lg bg-mirage p-2">
                             </div>
                             <div>
                                 <h1 class="text-2xl md:text-3xl font-bold text-mystic">
@@ -118,7 +127,8 @@
                             </div>
                             <div class="flex flex-col items-center space-y-3 pt-2 w-full">
                                 <a href="/api/download" class="cursor-pointer bg-boston-blue px-6 py-3 rounded-lg text-mystic font-semibold tracking-wider btn-effect inline-flex items-center space-x-3">
-                                    <img src="winlogo.png" alt="Windows Logo" class="w-5 h-5">
+                                    <!-- RUTA CORREGIDA -->
+                                    <img src="./winlogo.png" alt="Windows Logo" class="w-5 h-5">
                                     <span>Download</span>
                                 </a>
                                 <button id="toggle-notes-btn" class="text-sm text-mystic/70 hover:text-mystic transition-colors duration-200 p-1 hidden">
@@ -132,19 +142,23 @@
                         </div>
                     </main>
                 </div>
-                <!-- Columna Derecha: Slideshow de Capturas -->
-                <div class="w-full md:w-1/2 lg:w-3/5 h-64 md:h-auto md:max-h-[60vh]">
-                    <div class="glass-card w-full h-full rounded-2xl p-3 shadow-2xl">
-                        <div id="slideshow" class="slideshow-container rounded-lg overflow-hidden">
+
+                <!-- Columna Derecha: Slideshow de Capturas (OPTIMIZADO) -->
+                <div class="w-full lg:w-3/5 flex justify-center lg:justify-start">
+                    <div class="glass-card w-full max-w-2xl rounded-2xl p-3 shadow-2xl relative">
+                        <!-- Contenedor del slideshow con relación de aspecto para ser responsivo -->
+                        <div id="slideshow" class="relative w-full aspect-[16/10] rounded-lg overflow-hidden">
                             <div class="slide active screenshot cursor-pointer">
-                                <img src="scr1.png" alt="Captura de pantalla 1" class="w-full h-full object-contain" onerror="this.onerror=null;this.src='https://placehold.co/800x600/19202e/dae5ea?text=scr1.png%20no%20encontrada';">
+                                <!-- RUTA CORREGIDA -->
+                                <img src="./scr1.png" alt="Captura de pantalla 1" class="w-full h-full object-contain" onerror="this.onerror=null;this.src='https://placehold.co/800x500/19202e/dae5ea?text=scr1.png%20not%20found';">
                             </div>
                             <div class="slide screenshot cursor-pointer">
-                                <img src="scr2.png" alt="Captura de pantalla 2" class="w-full h-full object-contain" onerror="this.onerror=null;this.src='https://placehold.co/800x600/19202e/dae5ea?text=scr2.png%20no%20encontrada';">
+                                <!-- RUTA CORREGIDA -->
+                                <img src="./scr2.png" alt="Captura de pantalla 2" class="w-full h-full object-contain" onerror="this.onerror=null;this.src='https://placehold.co/800x500/19202e/dae5ea?text=scr2.png%20not%20found';">
                             </div>
                         </div>
                          <div id="slide-dots" class="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
-                            <!-- Dots will be generated by JS -->
+                            <!-- Los puntos se generan con JS -->
                         </div>
                     </div>
                 </div>
@@ -174,7 +188,7 @@
                         </ul>
                     </div>
                     <div class="mt-8 text-center">
-                        <button id="back-to-main-btn" class="text-sm text-boston-blue hover:text-shakespeare font-semibold transition-colors">
+                        <button class="go-to-main-btn text-sm text-boston-blue hover:text-shakespeare font-semibold transition-colors">
                             &larr; Volver a la página principal
                         </button>
                     </div>
@@ -189,37 +203,22 @@
         <img id="lightbox-img" src="" alt="Captura de pantalla ampliada">
     </div>
 
-    <!-- Footer anclado a la parte inferior de la pantalla -->
+    <!-- Footer fijo en la parte inferior -->
     <footer class="fixed bottom-0 left-0 right-0 w-full p-4 bg-mirage/30 backdrop-blur-sm z-50">
-        <!-- Layout para Escritorio -->
-        <div class="hidden md:flex w-full max-w-7xl mx-auto items-center justify-between">
-            <a href="https://github.com/lologaby" target="_blank" rel="noopener noreferrer" class="text-mystic/70">
-                <div class="group relative">
-                    <button>
-                        <svg stroke-linejoin="round" stroke-linecap="round" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" class="w-8 hover:scale-125 duration-200 hover:stroke-boston-blue"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-                    </button>
-                    <span class="absolute -bottom-10 left-[50%] -translate-x-[50%] z-20 origin-bottom scale-0 px-3 rounded-lg border border-mystic/20 bg-mirage py-2 text-sm font-bold shadow-md transition-all duration-300 ease-in-out group-hover:scale-100 text-mystic">GitHub</span>
-                </div>
-            </a>
-            <div class="text-mystic/60 text-sm">
-                <span>Desarrollado por <a href="https://alexberrios.com" target="_blank" rel="noopener noreferrer" class="gradient-link">alexberrios.com</a></span>
-                <span class="text-mystic/40 mx-2">|</span>
-                <button id="go-to-credits-btn" class="hover:text-mystic transition-colors">Créditos</button>
-            </div>
-            <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="berr.io" data-color="#4da6c1" data-emoji="" data-font="Cookie" data-text="Págate los Café" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#FFDD00"></script>
-        </div>
-        <!-- Layout para Móviles -->
-        <div class="md:hidden flex flex-col items-center gap-4">
-            <div class="flex items-center justify-center gap-8">
-                <a href="https://github.com/lologaby" target="_blank" rel="noopener noreferrer" class="text-mystic/70">
-                    <svg stroke-linejoin="round" stroke-linecap="round" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" class="w-8"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+        <div class="w-full max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-center md:justify-between gap-4">
+            <!-- Iconos y Links -->
+            <div class="flex items-center gap-6">
+                 <a href="https://github.com/lologaby" target="_blank" rel="noopener noreferrer" class="text-mystic/70 group relative">
+                    <svg stroke-linejoin="round" stroke-linecap="round" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" class="w-8 hover:scale-125 duration-200 hover:stroke-boston-blue"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                    <span class="absolute -bottom-10 left-[50%] -translate-x-[50%] z-20 origin-bottom scale-0 px-3 rounded-lg border border-mystic/20 bg-mirage py-2 text-sm font-bold shadow-md transition-all duration-300 ease-in-out group-hover:scale-100 text-mystic hidden md:block">GitHub</span>
                 </a>
-                <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="berr.io" data-color="#FFDD00" data-emoji="" data-font="Cookie" data-text="" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#ffffff"></script>
+                <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="berr.io" data-color="#4da6c1" data-emoji="" data-font="Cookie" data-text="Págate los Café" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#FFDD00"></script>
             </div>
-            <div class="text-mystic/60 text-sm">
+            <!-- Texto y Créditos -->
+            <div class="text-mystic/60 text-sm text-center">
                 <span>Desarrollado por <a href="https://alexberrios.com" target="_blank" rel="noopener noreferrer" class="gradient-link">alexberrios.com</a></span>
                 <span class="text-mystic/40 mx-2">|</span>
-                <button id="go-to-credits-btn-mobile" class="hover:text-mystic transition-colors">Créditos</button>
+                <button class="go-to-credits-btn hover:text-mystic transition-colors">Créditos</button>
             </div>
         </div>
     </footer>
@@ -234,7 +233,10 @@
             const chevronIcon = document.getElementById('chevron-icon');
 
             fetch('/api/get-version')
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return response.json();
+                })
                 .then(data => {
                     if (data.version) {
                         versionElement.textContent = data.version;
@@ -242,24 +244,22 @@
                     } else { versionElement.textContent = 'N/A'; }
                     if (data.notes) { notesContent.innerHTML = marked.parse(data.notes); }
                 })
-                .catch(error => { console.error('Error al obtener la versión:', error); versionElement.textContent = 'Error'; });
+                .catch(error => { 
+                    console.error('Error al obtener la versión:', error); 
+                    versionElement.textContent = 'Error'; 
+                });
 
             toggleBtn.addEventListener('click', () => {
-                if (notesContainer.style.maxHeight) {
-                    notesContainer.style.maxHeight = null;
-                    chevronIcon.classList.remove('rotate-180');
-                } else {
-                    notesContainer.style.maxHeight = notesContainer.scrollHeight + "px";
-                    chevronIcon.classList.add('rotate-180');
-                }
+                const isExpanded = notesContainer.style.maxHeight;
+                notesContainer.style.maxHeight = isExpanded ? null : notesContainer.scrollHeight + "px";
+                chevronIcon.classList.toggle('rotate-180', !isExpanded);
             });
 
             // --- Lógica para la Transición de Páginas ---
             const mainPage = document.getElementById('main-page');
             const creditsPage = document.getElementById('credits-page');
-            const goToCreditsBtn = document.getElementById('go-to-credits-btn');
-            const goToCreditsBtnMobile = document.getElementById('go-to-credits-btn-mobile');
-            const backToMainBtn = document.getElementById('back-to-main-btn');
+            const goToCreditsBtns = document.querySelectorAll('.go-to-credits-btn');
+            const backToMainBtn = document.querySelector('.go-to-main-btn');
 
             const showCredits = () => {
                 mainPage.classList.add('inactive-left'); mainPage.classList.remove('active');
@@ -270,8 +270,7 @@
                 creditsPage.classList.remove('active'); creditsPage.classList.add('inactive-right');
             };
             
-            goToCreditsBtn.addEventListener('click', showCredits);
-            goToCreditsBtnMobile.addEventListener('click', showCredits);
+            goToCreditsBtns.forEach(btn => btn.addEventListener('click', showCredits));
             backToMainBtn.addEventListener('click', showMain);
 
             // --- Lógica para el Slideshow y Lightbox ---
@@ -281,47 +280,49 @@
             let currentSlide = 0;
             let slideInterval;
 
-            const createDots = () => {
-                slides.forEach((_, i) => {
-                    const dot = document.createElement('button');
-                    dot.classList.add('w-2', 'h-2', 'rounded-full', 'bg-mystic/40', 'transition-colors');
-                    dot.addEventListener('click', () => {
-                        goToSlide(i);
-                        resetInterval();
+            if (slides.length > 0) {
+                const createDots = () => {
+                    slides.forEach((_, i) => {
+                        const dot = document.createElement('button');
+                        dot.classList.add('w-2.5', 'h-2.5', 'rounded-full', 'bg-mystic/40', 'transition-colors', 'duration-300');
+                        dot.addEventListener('click', () => {
+                            goToSlide(i);
+                            resetInterval();
+                        });
+                        dotsContainer.appendChild(dot);
                     });
-                    dotsContainer.appendChild(dot);
-                });
-            };
+                };
 
-            const updateDots = () => {
-                const dots = dotsContainer.querySelectorAll('button');
-                dots.forEach((dot, i) => {
-                    dot.classList.toggle('bg-mystic', i === currentSlide);
-                    dot.classList.toggle('bg-mystic/40', i !== currentSlide);
-                });
-            };
+                const updateDots = () => {
+                    const dots = dotsContainer.querySelectorAll('button');
+                    dots.forEach((dot, i) => {
+                        dot.classList.toggle('bg-mystic', i === currentSlide);
+                        dot.classList.toggle('bg-mystic/40', i !== currentSlide);
+                    });
+                };
 
-            const goToSlide = (n) => {
-                slides[currentSlide].classList.remove('active');
-                currentSlide = (n + slides.length) % slides.length;
-                slides[currentSlide].classList.add('active');
-                updateDots();
-            };
+                const goToSlide = (n) => {
+                    slides[currentSlide].classList.remove('active');
+                    currentSlide = (n + slides.length) % slides.length;
+                    slides[currentSlide].classList.add('active');
+                    updateDots();
+                };
 
-            const nextSlide = () => goToSlide(currentSlide + 1);
+                const nextSlide = () => goToSlide(currentSlide + 1);
 
-            const startInterval = () => {
-                slideInterval = setInterval(nextSlide, 5000); // Cambia cada 5 segundos
-            };
-            
-            const resetInterval = () => {
-                clearInterval(slideInterval);
+                const startInterval = () => {
+                    slideInterval = setInterval(nextSlide, 5000); // Cambia cada 5 segundos
+                };
+                
+                const resetInterval = () => {
+                    clearInterval(slideInterval);
+                    startInterval();
+                };
+
+                createDots();
+                goToSlide(0);
                 startInterval();
-            };
-
-            createDots();
-            goToSlide(0);
-            startInterval();
+            }
 
             // Lightbox
             const screenshots = document.querySelectorAll('.screenshot');
@@ -332,6 +333,8 @@
             screenshots.forEach(ss => {
                 ss.addEventListener('click', () => {
                     const imgSrc = ss.querySelector('img').src;
+                    // Evita abrir el lightbox si la imagen de placeholder está activa
+                    if (imgSrc.includes('placehold.co')) return;
                     lightboxImg.src = imgSrc;
                     lightbox.classList.add('active');
                 });
