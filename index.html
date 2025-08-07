@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Worldnet Status Sender - Descargar</title>
+    <title>WNSS - Download Portal</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* Definimos tu paleta de colores como variables CSS */
+        /* WNET Color Palette */
         :root {
             --mirage: #19202e;
             --mystic: #dae5ea;
@@ -79,10 +79,14 @@
             <!-- TÍTULO Y DESCRIPCIÓN -->
             <div>
                 <h1 class="text-3xl md:text-4xl font-bold text-mystic">
-                    Worldnet Status Sender
+                    Worldnet Network Status Sender
                 </h1>
                 <p class="text-mystic/80 mt-2">
-                    La última versión de la aplicación está lista para descargar.
+                    Get Latest Version.
+                </p>
+                <!-- Contenedor para la versión -->
+                <p class="text-sm text-mystic/70 mt-4">
+                    Versión: <span id="version-display" class="font-semibold bg-mirage/50 px-2 py-1 rounded-md">Cargando...</span>
                 </p>
             </div>
 
@@ -108,7 +112,7 @@
         </div>
     </main>
     
-    <!-- Footer con "Buy Me a Coffee" y firma mejorada -->
+    <!-- Footer con "Buy Me a Coffee" -->
     <footer class="absolute bottom-4 left-0 right-0 px-6">
         <div class="w-full max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-center md:justify-between gap-4">
             <p class="text-mystic/60 text-sm order-2 md:order-1">Desarrollado por <a href="https://alexberrios.com" target="_blank" rel="noopener noreferrer" class="gradient-link">alexberrios.com</a></p>
@@ -118,6 +122,32 @@
             </div>
         </div>
     </footer>
+
+    <!-- Script para obtener la versión -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const versionElement = document.getElementById('version-display');
+            
+            fetch('/api/get-version')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('La respuesta de la red no fue exitosa');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data && data.version) {
+                        versionElement.textContent = data.version;
+                    } else {
+                        versionElement.textContent = 'No disponible';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al obtener la versión:', error);
+                    versionElement.textContent = 'Error';
+                });
+        });
+    </script>
 
 </body>
 </html>
