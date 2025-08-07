@@ -28,7 +28,7 @@
             background: linear-gradient(-45deg, var(--mirage), var(--congress-blue), var(--mirage), var(--boston-blue));
             background-size: 400% 400%;
             animation: gradientBG 25s ease infinite;
-            overflow: hidden; /* Clave para evitar barras de scroll durante la animación */
+            overflow: hidden; /* Clave para el efecto SPA */
         }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         .glass-card {
@@ -55,7 +55,6 @@
             animation: gradient-text-animation 5s ease-in-out infinite;
         }
         .hover\:stroke-boston-blue:hover { stroke: var(--boston-blue); }
-        /* Estilos para el contenedor de notas del release */
         .release-notes { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; }
         .release-notes-content { text-align: left; padding-top: 1rem; }
         .release-notes-content h1, .release-notes-content h2, .release-notes-content h3 { font-weight: 700; color: var(--mystic); margin-bottom: 0.5rem; }
@@ -63,27 +62,43 @@
         .release-notes-content li { margin-bottom: 0.25rem; }
 
         /* --- Estilos para la Transición de Página --- */
-        .page-container { position: relative; width: 100%; height: 100%; }
+        .page-container { position: relative; width: 100%; height: 100vh; }
         .page {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
             transition: transform 0.5s ease-in-out;
+            overflow-y: auto; /* Permite el scroll dentro de la página activa */
         }
         .page.active { transform: translateX(0); }
         .page.inactive-left { transform: translateX(-100%); }
         .page.inactive-right { transform: translateX(100%); }
+
+        /* --- Estilos para el Carrusel y Lightbox --- */
+        .carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; -ms-overflow-style: none; }
+        .carousel::-webkit-scrollbar { display: none; }
+        .carousel-item { flex: 0 0 100%; scroll-snap-align: center; }
+        .lightbox {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000; opacity: 0; pointer-events: none;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .lightbox.active { opacity: 1; pointer-events: auto; }
+        .lightbox img { max-width: 90%; max-height: 90%; object-fit: contain; }
+        .lightbox-close {
+            position: absolute; top: 1.5rem; right: 1.5rem;
+            color: white; font-size: 2rem; cursor: pointer;
+        }
     </style>
 </head>
-<body class="w-full min-h-screen flex items-center justify-center p-4">
+<body class="w-full min-h-screen flex items-center justify-center p-0 md:p-4">
 
     <div class="page-container">
         <!-- ===== PÁGINA PRINCIPAL ===== -->
         <div id="main-page" class="page active">
-            <div class="w-full h-full flex flex-col justify-center items-center pb-32 md:pb-24">
-                <main class="glass-card w-full max-w-md mx-auto rounded-2xl p-6 md:p-12 shadow-2xl">
+            <div class="w-full h-full flex flex-col items-center pt-8 pb-40 md:pb-32">
+                <main class="glass-card w-full max-w-md mx-auto rounded-2xl p-6 md:p-12 shadow-2xl flex-shrink-0">
                     <div class="text-center flex flex-col items-center space-y-5">
                         <div class="w-24 h-24 md:w-32 md:h-32 -mt-16 md:-mt-24">
                             <img src="piruicon.png" alt="Logo de Worldnet Status Sender" class="w-full h-full object-contain rounded-full shadow-lg bg-mirage p-2">
@@ -112,14 +127,29 @@
                     </div>
                 </main>
 
+                <!-- Sección de Capturas de Pantalla -->
                 <section class="w-full max-w-4xl mx-auto mt-12 px-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="glass-card rounded-lg p-2 shadow-lg">
+                    <!-- Vista Escritorio -->
+                    <div class="hidden md:grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="glass-card rounded-lg p-2 shadow-lg cursor-pointer screenshot">
                             <img src="scr1.png" alt="Captura de pantalla 1 de la aplicación" class="rounded-md w-full h-auto">
                         </div>
-                        <div class="glass-card rounded-lg p-2 shadow-lg">
+                        <div class="glass-card rounded-lg p-2 shadow-lg cursor-pointer screenshot">
                             <img src="scr2.png" alt="Captura de pantalla 2 de la aplicación" class="rounded-md w-full h-auto">
                         </div>
+                    </div>
+                    <!-- Vista Móvil (Carrusel) -->
+                    <div class="md:hidden relative">
+                        <div id="carousel" class="carousel rounded-lg">
+                            <div class="carousel-item p-1 screenshot cursor-pointer">
+                                <div class="glass-card rounded-lg p-2"><img src="scr1.png" class="rounded-md"></div>
+                            </div>
+                            <div class="carousel-item p-1 screenshot cursor-pointer">
+                                <div class="glass-card rounded-lg p-2"><img src="scr2.png" class="rounded-md"></div>
+                            </div>
+                        </div>
+                        <button id="prevBtn" class="absolute top-1/2 left-2 -translate-y-1/2 bg-mirage/50 p-2 rounded-full text-white">&lt;</button>
+                        <button id="nextBtn" class="absolute top-1/2 right-2 -translate-y-1/2 bg-mirage/50 p-2 rounded-full text-white">&gt;</button>
                     </div>
                 </section>
             </div>
@@ -127,7 +157,7 @@
 
         <!-- ===== PÁGINA DE CRÉDITOS ===== -->
         <div id="credits-page" class="page inactive-right">
-            <div class="w-full h-full flex items-center justify-center">
+             <div class="w-full h-full flex items-center justify-center p-4">
                 <main class="glass-card w-full max-w-lg mx-auto rounded-2xl p-8 shadow-2xl">
                     <h1 class="text-2xl md:text-3xl font-bold text-mystic text-center">Créditos</h1>
                     <div class="mt-6 text-mystic/90 space-y-4">
@@ -157,8 +187,14 @@
         </div>
     </div>
     
+    <!-- Lightbox para ver imágenes en grande -->
+    <div id="lightbox" class="lightbox">
+        <span id="lightbox-close" class="lightbox-close">&times;</span>
+        <img id="lightbox-img" src="" alt="Captura de pantalla ampliada">
+    </div>
+
     <!-- Footer anclado a la parte inferior de la pantalla -->
-    <footer class="fixed bottom-0 left-0 right-0 w-full p-4 bg-mirage/30 backdrop-blur-sm">
+    <footer class="fixed bottom-0 left-0 right-0 w-full p-4 bg-mirage/30 backdrop-blur-sm z-50">
         <!-- Layout para Escritorio -->
         <div class="hidden md:flex w-full max-w-7xl mx-auto items-center justify-between">
             <a href="https://github.com/lologaby" target="_blank" rel="noopener noreferrer" class="text-mystic/70">
@@ -210,14 +246,10 @@
                     } else { versionElement.textContent = 'N/A'; }
                     if (data.notes) { notesContent.innerHTML = marked.parse(data.notes); }
                 })
-                .catch(error => {
-                    console.error('Error al obtener la versión:', error);
-                    versionElement.textContent = 'Error';
-                });
+                .catch(error => { console.error('Error al obtener la versión:', error); versionElement.textContent = 'Error'; });
 
             toggleBtn.addEventListener('click', () => {
-                const isExpanded = notesContainer.style.maxHeight;
-                if (isExpanded && notesContainer.style.maxHeight !== '0px') {
+                if (notesContainer.style.maxHeight) {
                     notesContainer.style.maxHeight = null;
                     chevronIcon.classList.remove('rotate-180');
                 } else {
@@ -234,22 +266,47 @@
             const backToMainBtn = document.getElementById('back-to-main-btn');
 
             const showCredits = () => {
-                mainPage.classList.add('inactive-left');
-                mainPage.classList.remove('active');
-                creditsPage.classList.add('active');
-                creditsPage.classList.remove('inactive-right');
+                mainPage.classList.add('inactive-left'); mainPage.classList.remove('active');
+                creditsPage.classList.add('active'); creditsPage.classList.remove('inactive-right');
             };
-
             const showMain = () => {
-                mainPage.classList.remove('inactive-left');
-                mainPage.classList.add('active');
-                creditsPage.classList.remove('active');
-                creditsPage.classList.add('inactive-right');
+                mainPage.classList.remove('inactive-left'); mainPage.classList.add('active');
+                creditsPage.classList.remove('active'); creditsPage.classList.add('inactive-right');
             };
             
             goToCreditsBtn.addEventListener('click', showCredits);
             goToCreditsBtnMobile.addEventListener('click', showCredits);
             backToMainBtn.addEventListener('click', showMain);
+
+            // --- Lógica para el Carrusel y Lightbox ---
+            const carousel = document.getElementById('carousel');
+            const nextBtn = document.getElementById('nextBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            const screenshots = document.querySelectorAll('.screenshot');
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const lightboxClose = document.getElementById('lightbox-close');
+
+            if (carousel) {
+                nextBtn.addEventListener('click', () => {
+                    carousel.scrollBy({ left: carousel.offsetWidth, behavior: 'smooth' });
+                });
+                prevBtn.addEventListener('click', () => {
+                    carousel.scrollBy({ left: -carousel.offsetWidth, behavior: 'smooth' });
+                });
+            }
+            
+            screenshots.forEach(ss => {
+                ss.addEventListener('click', () => {
+                    const imgSrc = ss.querySelector('img').src;
+                    lightboxImg.src = imgSrc;
+                    lightbox.classList.add('active');
+                });
+            });
+
+            const closeLightbox = () => lightbox.classList.remove('active');
+            lightbox.addEventListener('click', closeLightbox);
+            lightboxClose.addEventListener('click', closeLightbox);
         });
     </script>
 
