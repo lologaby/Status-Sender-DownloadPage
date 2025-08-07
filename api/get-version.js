@@ -18,6 +18,8 @@ export default async function handler(req, res) {
                 'Authorization': `token ${GITHUB_TOKEN}`,
                 'Accept': 'application/vnd.github.v3+json',
             },
+            // IMPORTANTE: Se deshabilita el caché para esta solicitud específica a GitHub
+            cache: 'no-store',
         });
 
         if (!releaseResponse.ok) {
@@ -35,8 +37,14 @@ export default async function handler(req, res) {
              return res.status(404).json({ error: 'No se encontró la etiqueta de versión en el último release.' });
         }
 
+        // --- CORRECCIÓN ---
+        // Se cambian las cabeceras para evitar que Vercel o el navegador guarden la respuesta en caché.
+        // Esto asegura que cada vez que se visite la página, se obtenga la versión más reciente.
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+
         // Enviamos la versión y las notas como respuesta en formato JSON
-        res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate'); // Cache por 1 hora
         return res.status(200).json({ 
             version: version, 
             notes: notes || "No se encontraron notas para esta versión." 
