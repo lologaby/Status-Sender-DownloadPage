@@ -21,7 +21,6 @@ export default async function handler(req, res) {
         });
 
         if (!releaseResponse.ok) {
-            // Si hay un error (ej. no hay releases), lo devolvemos
             return res.status(releaseResponse.status).json({ error: `Error al contactar GitHub: ${releaseResponse.statusText}` });
         }
 
@@ -29,14 +28,19 @@ export default async function handler(req, res) {
 
         // El número de versión usualmente está en 'tag_name'
         const version = releaseData.tag_name;
+        // Las notas del release están en 'body' (formato Markdown)
+        const notes = releaseData.body;
 
         if (!version) {
              return res.status(404).json({ error: 'No se encontró la etiqueta de versión en el último release.' });
         }
 
-        // Enviamos la versión como respuesta en formato JSON
+        // Enviamos la versión y las notas como respuesta en formato JSON
         res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate'); // Cache por 1 hora
-        return res.status(200).json({ version: version });
+        return res.status(200).json({ 
+            version: version, 
+            notes: notes || "No se encontraron notas para esta versión." 
+        });
 
     } catch (error) {
         console.error('Error en la función get-version:', error);
