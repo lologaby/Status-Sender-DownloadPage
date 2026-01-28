@@ -44,17 +44,17 @@ export const ScreenshotCarousel = ({ slides, onOpen }) => {
           `
         )}
       </div>
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-        ${slides.map(
-          (_, index) => html`
-            <button
-              className=${`w-2.5 h-2.5 rounded-full transition-colors duration-300 ${index === current ? "bg-mystic" : "bg-mystic/30"}`}
-              onClick=${() => setCurrent(index)}
-              aria-label=${`Ir a captura ${index + 1}`}
-            ></button>
-          `
-        )}
-      </div>
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2.5">
+              ${slides.map(
+                (_, index) => html`
+                  <button
+                    className=${`w-2 h-2 rounded-full transition-all duration-300 ${index === current ? "bg-white w-6" : "bg-white/30 hover:bg-white/50"}`}
+                    onClick=${() => setCurrent(index)}
+                    aria-label=${`Ir a captura ${index + 1}`}
+                  ></button>
+                `
+              )}
+            </div>
     </div>
   `;
 };
