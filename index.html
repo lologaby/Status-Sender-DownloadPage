@@ -117,59 +117,26 @@
       </div>
     </div>
 
-    <script type="module">
-      console.log("index.html: Script module starting...");
-      
+    <script type="module" src="./js/main.js?v=3"></script>
+    <script>
       // Fallback error handler
       window.addEventListener('error', (e) => {
         console.error('Global error:', e);
         if (e.filename && e.filename.includes('.js')) {
           console.error('Error loading module:', e.filename, e.message);
-          const root = document.getElementById('root');
-          if (root && !root.querySelector('div[style*="Error"]')) {
-            root.innerHTML = `
-              <div style="color: #dae5ea; padding: 2rem; text-align: center; font-family: Inter, sans-serif;">
-                <h2 style="color: #dae5ea; margin-bottom: 1rem;">Error al cargar módulos</h2>
-                <p style="color: #dae5ea;">Error: ${e.message}</p>
-                <p style="color: #dae5ea; font-size: 0.875rem; margin-top: 1rem;">Archivo: ${e.filename || 'desconocido'}</p>
-                <p style="color: #dae5ea; font-size: 0.875rem; margin-top: 0.5rem;">Abre la consola del navegador (F12) para más detalles.</p>
-              </div>
-            `;
-          }
         }
       }, true);
-
-      // Load main module with error handling
-      import('./js/main.js')
-        .then(() => {
-          console.log("index.html: main.js loaded successfully");
-        })
-        .catch(err => {
-          console.error("index.html: Error loading main.js:", err);
-          const root = document.getElementById('root');
-          if (root) {
-            root.innerHTML = `
-              <div style="color: #dae5ea; padding: 2rem; text-align: center; font-family: Inter, sans-serif;">
-                <h2 style="color: #dae5ea; margin-bottom: 1rem;">Error al cargar la aplicación</h2>
-                <p style="color: #dae5ea;">${err.message}</p>
-                <p style="color: #dae5ea; font-size: 0.875rem; margin-top: 1rem;">Abre la consola del navegador (F12) para más detalles.</p>
-                <pre style="color: #dae5ea; font-size: 0.75rem; margin-top: 1rem; text-align: left; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 0.5rem; overflow: auto;">${err.stack || 'No stack trace'}</pre>
-              </div>
-            `;
-          }
-        });
 
       // Timeout fallback
       setTimeout(() => {
         const root = document.getElementById('root');
-        if (root && root.textContent.includes('Cargando')) {
-          console.warn("index.html: Timeout - app still loading");
+        if (root && root.textContent && root.textContent.includes('Cargando')) {
+          console.warn("Timeout - app still loading after 10 seconds");
           root.innerHTML = `
             <div style="color: #dae5ea; padding: 2rem; text-align: center; font-family: Inter, sans-serif;">
               <h2 style="color: #dae5ea; margin-bottom: 1rem;">La aplicación está tardando en cargar</h2>
-              <p style="color: #dae5ea;">Por favor, revisa la consola del navegador (F12) para ver errores.</p>
-              <p style="color: #dae5ea; font-size: 0.875rem; margin-top: 1rem;">Asegúrate de servir la página desde un servidor HTTP:</p>
-              <p style="color: #dae5ea; font-size: 0.75rem; margin-top: 0.5rem; font-family: monospace;">python3 -m http.server 8000</p>
+              <p style="color: #dae5ea;">Por favor, haz un hard refresh (Ctrl+Shift+R) para limpiar la caché.</p>
+              <p style="color: #dae5ea; font-size: 0.875rem; margin-top: 1rem;">O revisa la consola del navegador (F12) para ver errores.</p>
             </div>
           `;
         }
