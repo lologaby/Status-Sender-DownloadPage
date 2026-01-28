@@ -111,9 +111,47 @@
     </style>
   </head>
   <body class="w-full min-h-screen">
-    <div id="root"></div>
+    <div id="root">
+      <div style="color: #dae5ea; padding: 2rem; text-align: center; font-family: Inter, sans-serif;">
+        <p>Cargando aplicación...</p>
+      </div>
+    </div>
 
     <script type="module" src="./js/main.js"></script>
+    <script>
+      // Fallback error handler
+      window.addEventListener('error', (e) => {
+        if (e.filename && e.filename.includes('.js')) {
+          console.error('Error loading module:', e.filename, e.message);
+          const root = document.getElementById('root');
+          if (root && !root.querySelector('div[style*="Error"]')) {
+            root.innerHTML = `
+              <div style="color: #dae5ea; padding: 2rem; text-align: center; font-family: Inter, sans-serif;">
+                <h2 style="color: #dae5ea; margin-bottom: 1rem;">Error al cargar módulos</h2>
+                <p style="color: #dae5ea;">Error: ${e.message}</p>
+                <p style="color: #dae5ea; font-size: 0.875rem; margin-top: 1rem;">Archivo: ${e.filename || 'desconocido'}</p>
+                <p style="color: #dae5ea; font-size: 0.875rem; margin-top: 0.5rem;">Abre la consola del navegador (F12) para más detalles.</p>
+              </div>
+            `;
+          }
+        }
+      }, true);
+
+      // Timeout fallback
+      setTimeout(() => {
+        const root = document.getElementById('root');
+        if (root && root.textContent.includes('Cargando')) {
+          root.innerHTML = `
+            <div style="color: #dae5ea; padding: 2rem; text-align: center; font-family: Inter, sans-serif;">
+              <h2 style="color: #dae5ea; margin-bottom: 1rem;">La aplicación está tardando en cargar</h2>
+              <p style="color: #dae5ea;">Por favor, revisa la consola del navegador (F12) para ver errores.</p>
+              <p style="color: #dae5ea; font-size: 0.875rem; margin-top: 1rem;">Asegúrate de servir la página desde un servidor HTTP:</p>
+              <p style="color: #dae5ea; font-size: 0.75rem; margin-top: 0.5rem; font-family: monospace;">python3 -m http.server 8000</p>
+            </div>
+          `;
+        }
+      }, 5000);
+    </script>
 
     <!--Start of Tawk.to Script-->
     <script type="text/javascript">

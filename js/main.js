@@ -12,5 +12,20 @@ const html = htm.bind(React.createElement);
 gsap.registerPlugin(ScrollTrigger);
 
 // Initialize React app
-const root = createRoot(document.getElementById("root"));
-root.render(html`<${App} />`);
+try {
+  const rootElement = document.getElementById("root");
+  if (!rootElement) {
+    throw new Error("Root element not found");
+  }
+  const root = createRoot(rootElement);
+  root.render(html`<${App} />`);
+} catch (error) {
+  console.error("Error initializing app:", error);
+  document.getElementById("root").innerHTML = `
+    <div style="color: #dae5ea; padding: 2rem; text-align: center;">
+      <h2>Error al cargar la aplicación</h2>
+      <p>${error.message}</p>
+      <p style="font-size: 0.875rem; margin-top: 1rem;">Por favor, revisa la consola del navegador para más detalles.</p>
+    </div>
+  `;
+}
