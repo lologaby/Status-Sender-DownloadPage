@@ -1,15 +1,19 @@
 // Main entry point - initializes React app
 console.log("main.js: Starting to load...");
 
+// Import React first and make it globally available
+import React from "https://esm.sh/react@18.2.0";
 import { createRoot } from "https://esm.sh/react-dom@18.2.0/client";
 console.log("main.js: React DOM imported");
+
+// Make React available globally for motion library
+window.React = React;
 
 import { gsap } from "https://esm.sh/gsap@3.12.5";
 import { ScrollTrigger } from "https://esm.sh/gsap@3.12.5/ScrollTrigger";
 console.log("main.js: GSAP imported");
 
 import htm from "https://esm.sh/htm@3.1.1";
-import React from "https://esm.sh/react@18.2.0";
 console.log("main.js: React and htm imported");
 
 import { App } from "./components/App.js";
