@@ -117,10 +117,12 @@
       </div>
     </div>
 
-    <script type="module" src="./js/main.js"></script>
-    <script>
+    <script type="module">
+      console.log("index.html: Script module starting...");
+      
       // Fallback error handler
       window.addEventListener('error', (e) => {
+        console.error('Global error:', e);
         if (e.filename && e.filename.includes('.js')) {
           console.error('Error loading module:', e.filename, e.message);
           const root = document.getElementById('root');
@@ -137,10 +139,31 @@
         }
       }, true);
 
+      // Load main module with error handling
+      import('./js/main.js')
+        .then(() => {
+          console.log("index.html: main.js loaded successfully");
+        })
+        .catch(err => {
+          console.error("index.html: Error loading main.js:", err);
+          const root = document.getElementById('root');
+          if (root) {
+            root.innerHTML = `
+              <div style="color: #dae5ea; padding: 2rem; text-align: center; font-family: Inter, sans-serif;">
+                <h2 style="color: #dae5ea; margin-bottom: 1rem;">Error al cargar la aplicación</h2>
+                <p style="color: #dae5ea;">${err.message}</p>
+                <p style="color: #dae5ea; font-size: 0.875rem; margin-top: 1rem;">Abre la consola del navegador (F12) para más detalles.</p>
+                <pre style="color: #dae5ea; font-size: 0.75rem; margin-top: 1rem; text-align: left; background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 0.5rem; overflow: auto;">${err.stack || 'No stack trace'}</pre>
+              </div>
+            `;
+          }
+        });
+
       // Timeout fallback
       setTimeout(() => {
         const root = document.getElementById('root');
         if (root && root.textContent.includes('Cargando')) {
+          console.warn("index.html: Timeout - app still loading");
           root.innerHTML = `
             <div style="color: #dae5ea; padding: 2rem; text-align: center; font-family: Inter, sans-serif;">
               <h2 style="color: #dae5ea; margin-bottom: 1rem;">La aplicación está tardando en cargar</h2>
@@ -150,7 +173,7 @@
             </div>
           `;
         }
-      }, 5000);
+      }, 10000);
     </script>
 
     <!--Start of Tawk.to Script-->

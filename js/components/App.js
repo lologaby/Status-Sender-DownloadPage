@@ -15,10 +15,15 @@ import { SLIDES, FEATURES } from "../config.js";
 const html = htm.bind(React.createElement);
 
 export const App = () => {
-  const reducedMotion = usePrefersReducedMotion();
-  const { version, notes, error } = useVersionInfo();
-  const [lightboxSrc, setLightboxSrc] = useState("");
-  const [creditsOpen, setCreditsOpen] = useState(false);
+  console.log("App: Component rendering...");
+  try {
+    const reducedMotion = usePrefersReducedMotion();
+    console.log("App: usePrefersReducedMotion called, reducedMotion:", reducedMotion);
+    const { version, notes, error } = useVersionInfo();
+    console.log("App: useVersionInfo called, version:", version);
+    const [lightboxSrc, setLightboxSrc] = useState("");
+    const [creditsOpen, setCreditsOpen] = useState(false);
+    console.log("App: State initialized");
 
   return html`
     <div className="relative overflow-hidden">
@@ -131,4 +136,14 @@ export const App = () => {
     <${Lightbox} src=${lightboxSrc} onClose=${() => setLightboxSrc("")} />
     <${CreditsModal} open=${creditsOpen} onClose=${() => setCreditsOpen(false)} reducedMotion=${reducedMotion} />
   `;
+  } catch (err) {
+    console.error("App: Error in component:", err);
+    return html`
+      <div style="color: #dae5ea; padding: 2rem; text-align: center;">
+        <h2>Error en el componente App</h2>
+        <p>${err.message}</p>
+        <pre style="font-size: 0.75rem; margin-top: 1rem; text-align: left;">${err.stack}</pre>
+      </div>
+    `;
+  }
 };
