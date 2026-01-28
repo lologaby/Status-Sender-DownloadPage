@@ -1,364 +1,134 @@
 <!DOCTYPE html>
 <html lang="es" class="h-full">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WNSS - Download Portal</title>
-    <link rel="icon" type="image/png" href="./favicon.png">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Librería para convertir Markdown a HTML -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        /* Paleta de colores WNET */
-        :root {
-            --mirage: #19202e;
-            --mystic: #dae5ea;
-            --boston-blue: #319bba;
-            --azure: #2a63ab;
-            --shakespeare: #50accc;
-            --congress-blue: #06419c;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--mirage);
-            color: var(--mystic);
-            background: linear-gradient(-45deg, var(--mirage), var(--congress-blue), var(--mirage), var(--boston-blue));
-            background-size: 400% 400%;
-            animation: gradientBG 25s ease infinite;
-        }
-        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        
-        /* Estilo de tarjeta con efecto de vidrio */
-        .glass-card {
-            background: rgba(25, 32, 46, 0.6);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(218, 229, 234, 0.1);
-        }
-        
-        /* Efecto de hover para botones */
-        .btn-effect {
-             box-shadow: 0 4px 15px -5px rgba(49, 155, 186, 0.4);
-             transition: all 0.3s ease-in-out;
-        }
-        .btn-effect:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 0 20px 3px rgba(80, 172, 204, 0.5);
-        }
-        
-        /* Animación de gradiente para texto */
-        @keyframes gradient-text-animation { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        .gradient-link {
-            background: linear-gradient(90deg, var(--shakespeare), var(--mystic), var(--boston-blue), var(--shakespeare));
-            background-size: 200% auto;
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text; text-fill-color: transparent;
-            font-weight: 500; display: inline-block;
-            animation: gradient-text-animation 5s ease-in-out infinite;
-        }
-        
-        /* Estilos para las notas de la versión (release notes) */
-        .release-notes { max-height: 0; overflow: hidden; transition: max-height 0.5s ease-in-out; }
-        .release-notes-content { text-align: left; padding-top: 1rem; }
-        .release-notes-content h1, .release-notes-content h2, .release-notes-content h3 { font-weight: 700; color: var(--mystic); margin-bottom: 0.5rem; }
-        .release-notes-content ul { list-style-type: disc; padding-left: 1.5rem; }
-        .release-notes-content li { margin-bottom: 0.25rem; }
-
-        /* --- Estilos para la Transición de Página (efecto SPA) --- */
-        .page-container { position: relative; width: 100%; height: 100vh; overflow: hidden; }
-        .page {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
-            transition: transform 0.5s ease-in-out;
-            overflow-y: auto; /* Permite scroll dentro de la página si el contenido es muy largo */
-            padding-bottom: 120px; /* Espacio para el footer fijo */
-        }
-        .page.active { transform: translateX(0); }
-        .page.inactive-left { transform: translateX(-100%); }
-        .page.inactive-right { transform: translateX(100%); }
-
-        /* --- Estilos para el Slideshow y Lightbox --- */
-        .slide {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            opacity: 0; transition: opacity 1s ease-in-out;
-        }
-        .slide.active { opacity: 1; }
-        .lightbox {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.85);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 1000; opacity: 0; pointer-events: none;
-            transition: opacity 0.3s ease-in-out;
-        }
-        .lightbox.active { opacity: 1; pointer-events: auto; }
-        .lightbox img { max-width: 90%; max-height: 90%; object-fit: contain; box-shadow: 0 0 40px rgba(0,0,0,0.5); }
-        .lightbox-close {
-            position: absolute; top: 1.5rem; right: 1.5rem;
-            color: white; font-size: 2.5rem; cursor: pointer; line-height: 1;
-        }
-    </style>
-</head>
-<body class="w-full min-h-screen">
-
-    <div class="page-container">
-        <!-- ===== PÁGINA PRINCIPAL ===== -->
-        <div id="main-page" class="page active">
-            <!-- Contenedor principal flexible y responsivo -->
-            <div class="w-full h-full flex flex-col lg:flex-row items-center justify-center gap-8 p-4 sm:p-8">
-                
-                <!-- Columna Izquierda: Tarjeta de Descarga -->
-                <div class="w-full lg:w-2/5 flex justify-center lg:justify-end">
-                    <main class="glass-card w-full max-w-md rounded-2xl p-6 md:p-10 shadow-2xl flex-shrink-0">
-                        <div class="text-center flex flex-col items-center space-y-5">
-                            <div class="w-24 h-24 md:w-28 md:h-28 -mt-16 md:-mt-20">
-                                <!-- RUTA CORREGIDA -->
-                                <img src="./piruicon.png" alt="Logo de Worldnet Status Sender" class="w-full h-full object-contain rounded-full shadow-lg bg-mirage p-2">
-                            </div>
-                            <div>
-                                <h1 class="text-2xl md:text-3xl font-bold text-mystic">
-                                    Worldnet Network Status Sender
-                                </h1>
-                                <p class="text-mystic/80 mt-2 text-sm md:text-base">
-                                    Get Latest Version.
-                                </p>
-                            </div>
-                            <div class="flex flex-col items-center space-y-3 pt-2 w-full">
-                                <a href="/api/download" class="cursor-pointer bg-boston-blue px-6 py-3 rounded-lg text-mystic font-semibold tracking-wider btn-effect inline-flex items-center space-x-3">
-                                    <!-- RUTA CORREGIDA -->
-                                    <img src="./winlogo.png" alt="Windows Logo" class="w-5 h-5">
-                                    <span>Download</span>
-                                </a>
-                                <button id="toggle-notes-btn" class="text-sm text-mystic/70 hover:text-mystic transition-colors duration-200 p-1 hidden">
-                                    Version: <span id="version-display" class="font-semibold">Loading...</span>
-                                    <svg id="chevron-icon" class="inline-block w-4 h-4 ml-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                                </button>
-                                <div id="release-notes-container" class="release-notes w-full">
-                                    <div id="release-notes-content" class="release-notes-content text-mystic/90 text-sm"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </main>
-                </div>
-
-                <!-- Columna Derecha: Slideshow de Capturas (OPTIMIZADO) -->
-                <div class="w-full lg:w-3/5 flex justify-center lg:justify-start">
-                    <div class="glass-card w-full max-w-2xl rounded-2xl p-3 shadow-2xl relative">
-                        <!-- Contenedor del slideshow con relación de aspecto para ser responsivo -->
-                        <div id="slideshow" class="relative w-full aspect-[16/10] rounded-lg overflow-hidden">
-                            <div class="slide active screenshot cursor-pointer">
-                                <!-- RUTA CORREGIDA -->
-                                <img src="./scr1.png" alt="Captura de pantalla 1" class="w-full h-full object-contain" onerror="this.onerror=null;this.src='https://placehold.co/800x500/19202e/dae5ea?text=scr1.png%20not%20found';">
-                            </div>
-                            <div class="slide screenshot cursor-pointer">
-                                <!-- RUTA CORREGIDA -->
-                                <img src="./scr2.png" alt="Captura de pantalla 2" class="w-full h-full object-contain" onerror="this.onerror=null;this.src='https://placehold.co/800x500/19202e/dae5ea?text=scr2.png%20not%20found';">
-                            </div>
-                        </div>
-                         <div id="slide-dots" class="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
-                            <!-- Los puntos se generan con JS -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ===== PÁGINA DE CRÉDITOS ===== -->
-        <div id="credits-page" class="page inactive-right">
-             <div class="w-full h-full flex items-center justify-center p-4">
-                <main class="glass-card w-full max-w-lg mx-auto rounded-2xl p-8 shadow-2xl">
-                    <h1 class="text-2xl md:text-3xl font-bold text-mystic text-center">Créditos</h1>
-                    <div class="mt-6 text-mystic/90 space-y-4">
-                        <p>Este proyecto es posible gracias a las contribuciones y el apoyo de las siguientes personas:</p>
-                        <ul class="space-y-3">
-                            <li>
-                                Alex Berrios (<a href="https://github.com/lologaby" target="_blank" rel="noopener noreferrer" class="font-semibold hover:text-boston-blue transition-colors">@lologaby</a>)
-                                <span class="block text-sm text-mystic/70 pl-4">- Desarrollador Principal</span>
-                            </li>
-                            <li>
-                                Samuel O. Rivera (<a href="https://github.com/sabdielis" target="_blank" rel="noopener noreferrer" class="font-semibold hover:text-boston-blue transition-colors">@sabdielis</a>, <a href="https://www.linkedin.com/in/samuel-o-rivera/" target="_blank" rel="noopener noreferrer" class="font-semibold hover:text-boston-blue transition-colors">LinkedIn</a>)
-                                <span class="block text-sm text-mystic/70 pl-4">- Diseño de UI y modo oscuro</span>
-                            </li>
-                            <li>
-                                Genesis D. Ortiz (<a href="https://www.linkedin.com/in/genesis-d-ortiz-203b84214/" target="_blank" rel="noopener noreferrer" class="font-semibold hover:text-boston-blue transition-colors">LinkedIn</a>)
-                                <span class="block text-sm text-mystic/70 pl-4">- Creación de la plantilla de reporte</span>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="mt-8 text-center">
-                        <button class="go-to-main-btn text-sm text-boston-blue hover:text-shakespeare font-semibold transition-colors">
-                            &larr; Volver a la página principal
-                        </button>
-                    </div>
-                </main>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Lightbox para ver imágenes en grande -->
-    <div id="lightbox" class="lightbox">
-        <span id="lightbox-close" class="lightbox-close">&times;</span>
-        <img id="lightbox-img" src="" alt="Captura de pantalla ampliada">
-    </div>
-
-    <!-- Footer fijo en la parte inferior -->
-    <footer class="fixed bottom-0 left-0 right-0 w-full p-4 bg-mirage/30 backdrop-blur-sm z-50">
-        <div class="w-full max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-center md:justify-between gap-4">
-            <!-- Iconos y Links -->
-            <div class="flex items-center gap-6">
-                 <a href="https://github.com/lologaby" target="_blank" rel="noopener noreferrer" class="text-mystic/70 group relative">
-                    <svg stroke-linejoin="round" stroke-linecap="round" stroke-width="2" stroke="currentColor" fill="none" viewBox="0 0 24 24" class="w-8 hover:scale-125 duration-200 hover:stroke-boston-blue"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-                    <span class="absolute -bottom-10 left-[50%] -translate-x-[50%] z-20 origin-bottom scale-0 px-3 rounded-lg border border-mystic/20 bg-mirage py-2 text-sm font-bold shadow-md transition-all duration-300 ease-in-out group-hover:scale-100 text-mystic hidden md:block">GitHub</span>
-                </a>
-                <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="berr.io" data-color="#4da6c1" data-emoji="" data-font="Cookie" data-text="Págate los Café" data-outline-color="#000000" data-font-color="#000000" data-coffee-color="#FFDD00"></script>
-            </div>
-            <!-- Texto y Créditos -->
-            <div class="text-mystic/60 text-sm text-center">
-                <span>Desarrollado por <a href="https://alexberrios.com" target="_blank" rel="noopener noreferrer" class="gradient-link">alexberrios.com</a></span>
-                <span class="text-mystic/40 mx-2">|</span>
-                <button class="go-to-credits-btn hover:text-mystic transition-colors">Créditos</button>
-            </div>
-        </div>
-    </footer>
-
+    <link rel="icon" type="image/png" href="./favicon.png" />
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // --- Lógica para la Versión y Notas ---
-            const versionElement = document.getElementById('version-display');
-            const toggleBtn = document.getElementById('toggle-notes-btn');
-            const notesContainer = document.getElementById('release-notes-container');
-            const notesContent = document.getElementById('release-notes-content');
-            const chevronIcon = document.getElementById('chevron-icon');
-
-            fetch('/api/get-version')
-                .then(response => {
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.version) {
-                        versionElement.textContent = data.version;
-                        toggleBtn.classList.remove('hidden');
-                    } else { versionElement.textContent = 'N/A'; }
-                    if (data.notes) { notesContent.innerHTML = marked.parse(data.notes); }
-                })
-                .catch(error => { 
-                    console.error('Error al obtener la versión:', error); 
-                    versionElement.textContent = 'Error'; 
-                });
-
-            toggleBtn.addEventListener('click', () => {
-                const isExpanded = notesContainer.style.maxHeight;
-                notesContainer.style.maxHeight = isExpanded ? null : notesContainer.scrollHeight + "px";
-                chevronIcon.classList.toggle('rotate-180', !isExpanded);
-            });
-
-            // --- Lógica para la Transición de Páginas ---
-            const mainPage = document.getElementById('main-page');
-            const creditsPage = document.getElementById('credits-page');
-            const goToCreditsBtns = document.querySelectorAll('.go-to-credits-btn');
-            const backToMainBtn = document.querySelector('.go-to-main-btn');
-
-            const showCredits = () => {
-                mainPage.classList.add('inactive-left'); mainPage.classList.remove('active');
-                creditsPage.classList.add('active'); creditsPage.classList.remove('inactive-right');
-            };
-            const showMain = () => {
-                mainPage.classList.remove('inactive-left'); mainPage.classList.add('active');
-                creditsPage.classList.remove('active'); creditsPage.classList.add('inactive-right');
-            };
-            
-            goToCreditsBtns.forEach(btn => btn.addEventListener('click', showCredits));
-            backToMainBtn.addEventListener('click', showMain);
-
-            // --- Lógica para el Slideshow y Lightbox ---
-            const slideshow = document.getElementById('slideshow');
-            const slides = slideshow.querySelectorAll('.slide');
-            const dotsContainer = document.getElementById('slide-dots');
-            let currentSlide = 0;
-            let slideInterval;
-
-            if (slides.length > 0) {
-                const createDots = () => {
-                    slides.forEach((_, i) => {
-                        const dot = document.createElement('button');
-                        dot.classList.add('w-2.5', 'h-2.5', 'rounded-full', 'bg-mystic/40', 'transition-colors', 'duration-300');
-                        dot.addEventListener('click', () => {
-                            goToSlide(i);
-                            resetInterval();
-                        });
-                        dotsContainer.appendChild(dot);
-                    });
-                };
-
-                const updateDots = () => {
-                    const dots = dotsContainer.querySelectorAll('button');
-                    dots.forEach((dot, i) => {
-                        dot.classList.toggle('bg-mystic', i === currentSlide);
-                        dot.classList.toggle('bg-mystic/40', i !== currentSlide);
-                    });
-                };
-
-                const goToSlide = (n) => {
-                    slides[currentSlide].classList.remove('active');
-                    currentSlide = (n + slides.length) % slides.length;
-                    slides[currentSlide].classList.add('active');
-                    updateDots();
-                };
-
-                const nextSlide = () => goToSlide(currentSlide + 1);
-
-                const startInterval = () => {
-                    slideInterval = setInterval(nextSlide, 5000); // Cambia cada 5 segundos
-                };
-                
-                const resetInterval = () => {
-                    clearInterval(slideInterval);
-                    startInterval();
-                };
-
-                createDots();
-                goToSlide(0);
-                startInterval();
+      window.tailwind = window.tailwind || {};
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              mirage: "#19202e",
+              mystic: "#dae5ea",
+              "boston-blue": "#319bba",
+              azure: "#2a63ab",
+              shakespeare: "#50accc",
+              "congress-blue": "#06419c"
             }
-
-            // Lightbox
-            const screenshots = document.querySelectorAll('.screenshot');
-            const lightbox = document.getElementById('lightbox');
-            const lightboxImg = document.getElementById('lightbox-img');
-            const lightboxClose = document.getElementById('lightbox-close');
-            
-            screenshots.forEach(ss => {
-                ss.addEventListener('click', () => {
-                    const imgSrc = ss.querySelector('img').src;
-                    // Evita abrir el lightbox si la imagen de placeholder está activa
-                    if (imgSrc.includes('placehold.co')) return;
-                    lightboxImg.src = imgSrc;
-                    lightbox.classList.add('active');
-                });
-            });
-
-            const closeLightbox = () => lightbox.classList.remove('active');
-            lightbox.addEventListener('click', closeLightbox);
-            lightboxClose.addEventListener('click', closeLightbox);
-        });
+          }
+        }
+      };
     </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --mirage: #19202e;
+        --mystic: #dae5ea;
+        --boston-blue: #319bba;
+        --azure: #2a63ab;
+        --shakespeare: #50accc;
+        --congress-blue: #06419c;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: var(--mirage);
+        color: var(--mystic);
+        background: radial-gradient(1200px 600px at 10% 10%, rgba(80, 172, 204, 0.25), transparent 55%),
+          radial-gradient(900px 500px at 90% 20%, rgba(6, 65, 156, 0.25), transparent 55%),
+          linear-gradient(135deg, #121826 0%, #0f1a2b 55%, #10223b 100%);
+        min-height: 100vh;
+      }
+      .glass-card {
+        background: rgba(17, 23, 36, 0.7);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border: 1px solid rgba(218, 229, 234, 0.08);
+      }
+      .btn-effect {
+        box-shadow: 0 12px 40px -20px rgba(49, 155, 186, 0.8);
+        transition: all 0.25s ease;
+      }
+      .btn-effect:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 16px 45px -18px rgba(80, 172, 204, 0.8);
+      }
+      @keyframes floatGlow {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-12px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+      .orb {
+        position: absolute;
+        filter: blur(80px);
+        opacity: 0.6;
+        animation: floatGlow 8s ease-in-out infinite;
+      }
+      .orb.orb-one {
+        top: -10%;
+        left: 10%;
+        width: 320px;
+        height: 320px;
+        background: rgba(80, 172, 204, 0.5);
+      }
+      .orb.orb-two {
+        bottom: -15%;
+        right: 5%;
+        width: 280px;
+        height: 280px;
+        background: rgba(6, 65, 156, 0.5);
+        animation-delay: 1.5s;
+      }
+      .release-notes {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.35s ease;
+      }
+      .release-notes-content h1,
+      .release-notes-content h2,
+      .release-notes-content h3 {
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+      .release-notes-content ul {
+        list-style-type: disc;
+        padding-left: 1.5rem;
+      }
+      .release-notes-content li {
+        margin-bottom: 0.35rem;
+      }
+    </style>
+  </head>
+  <body class="w-full min-h-screen">
+    <div id="root"></div>
+
+    <script type="module" src="./js/main.js"></script>
 
     <!--Start of Tawk.to Script-->
     <script type="text/javascript">
-    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-    (function(){
-    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-    s1.async=true;
-    s1.src='https://embed.tawk.to/6895fe2af3b0d21923c68206/1j24uhle2';
-    s1.charset='UTF-8';
-    s1.setAttribute('crossorigin','*');
-    s0.parentNode.insertBefore(s1,s0);
-    })();
+      var Tawk_API = Tawk_API || {},
+        Tawk_LoadStart = new Date();
+      (function () {
+        var s1 = document.createElement("script"),
+          s0 = document.getElementsByTagName("script")[0];
+        s1.async = true;
+        s1.src = "https://embed.tawk.to/6895fe2af3b0d21923c68206/1j24uhle2";
+        s1.charset = "UTF-8";
+        s1.setAttribute("crossorigin", "*");
+        s0.parentNode.insertBefore(s1, s0);
+      })();
     </script>
     <!--End of Tawk.to Script-->
-
-</body>
+  </body>
 </html>
